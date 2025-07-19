@@ -1,0 +1,349 @@
+import random
+id = random.randint(1000,9999)
+import time
+import smtplib
+from email.mime.text import MIMEText
+from google.colab import auth
+auth.authenticate_user()
+last_transaction_time = 0
+import gspread
+from google.auth import default
+creds, _ = default()
+
+gc = gspread.authorize(creds)
+
+# 1. Open a spreadsheet by title:
+try:
+  spreadsheet = gc.open("GNB DATA store")  # Replace with your spreadsheet title
+  print(f"Spreadsheet '{spreadsheet.title}' opened successfully.")
+except gspread.exceptions.SpreadsheetNotFound:
+  print(f"Error: Spreadsheet 'Your Spreadsheet Title' not found. Check the title and ensure it's shared with your Google account.")
+  exit() # Stop execution since the sheet isn't found
+
+# 2. Open a spreadsheet by ID: (More reliable)
+# Find the spreadsheet ID in the URL of your Google Sheet. It's the long string between /d/ and /edit
+# Example URL: https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=0
+spreadsheet_id = "1IASJuOJ3_GY9C82lJbma_6416GTfa6zFy4Q2T82KeQI" # Replace with your spreadsheet ID
+try:
+    spreadsheet = gc.open_by_key(spreadsheet_id)
+    print(f"Spreadsheet with ID '{spreadsheet_id}' opened successfully.")
+except gspread.exceptions.SpreadsheetNotFound:
+    print(f"Error: Spreadsheet with ID '{spreadsheet_id}' not found. Check the ID and ensure it's shared with your Google account.")
+    exit()
+
+# Get the first worksheet
+worksheet = spreadsheet.get_worksheet(0) # Get the first worksheet (index 0)
+
+balance = 5234
+brand_new_balance = 0
+#starting interface
+
+print ("welcome to Goliath National Bank")
+print ("\n Your Financial Wingman")
+print ("\n Debit or credit? No worries - we got you, bro!")
+
+time.sleep(10)
+
+print ("\n\n Q : Why choose Goliath National Bank when there are so many banks out there?")
+print ("\n ANS : Well, because banks aren't cool in general. They're boring, they don't look classy and they will never even try to be your bro. Will your regular bank be your wingman at the club every night? No! Will your bank ship awesome suits to your door every monday morning so that you can start your week as an awesome gentleman? No. So what are you waiting for? Suit up and open free account with Goliath National Bank now!")
+
+time.sleep(10)
+
+print ("\n\n Q : So you're claiming you're a new type of bank?")
+print  ("\n ANS : Yes. Goliath National bank TOTALLY IS a new and completely different type of bank. And we're not just different. We're legen ... wait for it...")
+
+time.sleep(10)
+
+print ("\n\n Q : Is this a real bank?")
+print ("\n ANS : No. Goliath National bank is a finction. Don't take life too seriously, bro!")
+
+time.sleep(10)
+
+#real operation begins here
+
+print ("\n\n how can we help you today ? ") #Removed indentation from this line and subsequent lines within this block
+print ("1 = Check Balance");
+print ("2 = Create new account");
+print ("3 = withdraw money");
+print ("4 = make a deposit");
+print ("5 = say i love you to a girl on your first date (delete account)");
+print ("6 = get left at the alter (declare Bankruptcy)");
+print ("7 = make a bro's life awesome (send someone money) ");
+print ("8 = did he cheat ? ");
+
+while(True):
+#take choice from the user
+  n = input("Do u wanna continue: (Y/N)")
+  if n.lower() == "n":
+    break;
+
+  choice = int(input("\n\n input the number corseponding to the operation you wanna perform :"));
+
+  #choice 1
+  if (choice==1): #verification
+      while True:  # Loop for verification attempts
+          verification = input("Enter account number (ID): ")
+
+          ids = worksheet.col_values(1)
+
+          if verification in ids:
+              row_index = ids.index(verification) + 1
+              balance = worksheet.cell(row_index, 3).value
+              try:
+                  balance = float(balance)
+                  print ("\n well my friend life can be boring at times so why not get yourself a suit to make it awesome, but seeing your bank balance u cant afford one easily, worry not i got the right man for you. ");
+                  print (" \n by the way your balance is: $",balance);
+                  # ... (rest of your code for choice 1) ...
+                  break  # Exit the loop if verification is successful
+
+              except ValueError:
+                  print("Error: Balance value is not a valid number.")
+                  break #exit the loop if there is value error
+
+          else:
+              print("\n Account number not found. Please check your input or create an account.")
+              while True: #loop for choices 1 and 2
+                  print("\n Would you like to create an account or re-enter the ID?")
+                  print("1 = Re-enter ID")
+                  print("2 = Create an account")
+                  try:
+                      choice = int(input("\n Input the number corresponding to the operation you want to perform: "))
+                      if choice == 1:
+                          break  # Go back to the beginning of the verification loop
+                      elif choice == 2:
+                          # ... (your code for creating an account) ...
+                          break #exit the loop if the user creates an account
+                      else:
+                          print("Invalid choice. Please enter 1 or 2.")
+                  except ValueError:
+                      print("Invalid input. Please enter a number.")
+              if choice == 2:
+                  break #exit the loop if the user creates an account
+              elif choice == 1:
+                  continue #continue the loop from the very beggining
+
+  if (choice==2):
+      # Find the next available row:
+      def find_next_available_row(worksheet):
+          """Finds the next empty row in the worksheet."""
+          list_of_lists = worksheet.get_all_values()
+          return len(list_of_lists) + 1  # Add 1 because indexing starts from 1
+
+      next_row = find_next_available_row(worksheet)
+
+      print ("\n welcome to the new way of living life. \n its the legen....wait for it.....dery way of life");
+      name = input("\n Please enter your name: ")
+
+      # Generate a unique ID (you might want to use a more robust method for production)
+      #import random
+      #import string
+
+      print ("\n hello ",name ,"your new id is : " ,id ,"use it to access our services at any time of the day");
+
+      # Store the data in the next available row:
+      worksheet.update_cell(next_row, 1, id)
+      worksheet.update_cell(next_row, 2, name)
+
+      print(f"Your ID and name have been stored in row {next_row}.")
+      print("would you like to deposit some money right now")
+      yes='yes' # Assign the string 'yes' to the variable yes
+      YES='yes' # Assign the string 'yes' to the variable yes
+      Yes='yes' # Assign the string 'yes' to the variable yes
+      no='no'  # Assign the string 'no' to the variable no
+      NO='no'  # Assign the string 'no' to the variable no
+      No='no'  # Assign the string 'no' to the variable no
+      choice = str(input("\n\n yes or no : "));
+      if (choice==yes,YES,Yes):
+          brand_new_deposit = float(input("\n enter the sum you wanna add : $"));
+          brand_new_balance= brand_new_deposit
+          print ("\n here you go bro. the new balance is : $",brand_new_balance);
+          worksheet.update_cell(next_row, 3, brand_new_balance)  # Store balance in the same row
+          print(f"Your deposit has been stored in row {next_row}.")
+          # ... (rest of your code) ...
+      else:
+          print ("thank you for choosing us")
+
+  #choice 3
+  if (choice == 3):  # Verification and withdrawal
+      verification = input("Enter account number (ID): ")
+
+      ids = worksheet.col_values(1)
+
+      if verification in ids:
+          row_index = ids.index(verification) + 1
+          balance = worksheet.cell(row_index, 3).value
+          try:
+              balance = float(balance)  # Convert to float
+
+              print("\n A BRO IN NEED IS A BRO INDEED")
+              print("\n How much money do you need bro")
+
+              while True: # loop for withdrawal input
+                  try:
+                      withdraw = float(input("\n Enter the required sum: "))
+                      if withdraw <= balance:
+                          leftbalance = balance - withdraw
+                          print("\n Here you go bro. The remaining balance is: $", leftbalance)
+
+                          # Update the balance in the sheet:
+                          worksheet.update_cell(row_index, 3, leftbalance) #updates the value in the sheet
+                          print("Balance updated in your sheet.")
+
+                          break #exit the loop if the withdrawal is successful
+                      else:
+                          print("\n You don't have enough money bro.")
+                  except ValueError:
+                      print("Invalid input. Please enter a number.")
+
+
+          except ValueError:
+              print("Error: Balance value is not a valid number.")
+
+      else:
+          print("\n Lying to your bro? Bro be better than that, go make an account if you haven't already.")
+
+  #choice 4
+  if (choice==4):
+      verification = input("Enter account number (ID): ")
+
+      ids = worksheet.col_values(1)
+
+      if verification in ids:
+          row_index = ids.index(verification) + 1
+          balance = worksheet.cell(row_index, 3).value
+          print ("\n trust me bro I am gonna keep your money safe")
+          deposit = float(input("\n enter the sum you wanna add :"));
+
+          # Convert balance to a float before adding deposit
+          newbalance= float(balance) + deposit
+
+          print ("\n here you go bro. the new balance is : $",newbalance);
+          worksheet.update_cell(row_index, 3, newbalance)  # Store balance in the same row
+          print(f"Your deposit has been stored in row {row_index}.")
+      else:
+          print("\n lying to your bro ? bro be better than that , go make an account if you havent already");
+
+  #choice 5
+  if choice == 5:  # Delete Account
+      verification = input("Enter account number (ID) to delete: ")
+
+      ids = worksheet.col_values(1)
+
+      if verification in ids:
+          row_index = ids.index(verification) + 1
+
+  # Clear the row data (you can customize this):
+          worksheet.delete_rows(row_index)  # Delete the entire row
+
+          print(f"Account with ID {verification} has been deleted.")
+
+      else:
+          print("\n Account number not found.")
+
+  #choice 6
+  if (choice==6):
+  # Delete Account (Set Balance to Zero)
+      verification = input("Enter account number (ID) to delete/zero out balance: ")
+
+      ids = worksheet.col_values(1)
+
+      if verification in ids:
+          row_index = ids.index(verification) + 1
+
+          # Set the balance to zero:
+          worksheet.update_cell(row_index, 3, 0)  # Updates the balance cell to 0
+
+          print(f"Account balance for ID {verification} has been set to zero.")
+
+  #choice 7
+  if (choice == 7):
+      amount_to_send = 0.0
+      # Get the sender's account ID
+      sender_verification = input("Enter your account number (ID): ")
+      sender_ids = worksheet.col_values(1)
+
+      if sender_verification in sender_ids:
+          sender_row_index = sender_ids.index(sender_verification) + 1
+          sender_balance = float(worksheet.cell(sender_row_index, 3).value)
+
+          # Get the recipient's account ID
+          recipient_verification = input("Enter account number (ID) to send money to: ")
+          recipient_ids = worksheet.col_values(1)
+
+      if recipient_verification in recipient_ids:
+          recipient_row_index = recipient_ids.index(recipient_verification) + 1
+
+          # Check if the cell value is None before converting to float
+          recipient_balance_value = worksheet.cell(recipient_row_index, 3).value
+          if recipient_balance_value is not None:
+              recipient_balance = float(recipient_balance_value)
+          else:
+              recipient_balance = 0.0  # Or handle the None value differently
+              print(f"Warning: Recipient account {recipient_verification} has no balance. Setting to 0.0.")
+
+              # Get the amount to send
+          while True:
+              try:
+                  amount_to_send = float(input("Enter the amount to send: $"))
+                  if amount_to_send <= sender_balance:
+                      break  # Exit loop if amount is valid
+                  else:
+                      print("\nInsufficient funds in your account.")
+              except ValueError:
+                  print("Invalid input. Please enter a number.")
+
+          # Update balances
+          sender_balance -= amount_to_send
+          recipient_balance += amount_to_send
+
+          # Update balances in the sheet
+          worksheet.update_cell(sender_row_index, 3, sender_balance)
+          worksheet.update_cell(recipient_row_index, 3, recipient_balance)
+
+          print(f"Successfully sent ${amount_to_send} to account {recipient_verification}.")
+          print(f"Your new balance is: ${sender_balance}")
+      last_transaction_time = time.time()
+      last_transaction_details = {
+          "sender_id": sender_verification,
+          "recipient_id": recipient_verification,
+          "amount": amount_to_send
+      }
+      while True:
+          next_action = input("Do you want to reverse the transaction (option 8) or exit? (8/exit): ").lower()
+          if next_action == "8":
+              choice = 8  # Set choice to 8 to trigger option 8
+              break  # Exit the inner loop
+          elif next_action == "exit":
+              print("Exiting...")
+              break  # Exit the inner loop
+          else:
+              print("Invalid input. Please enter '8' or 'exit'.")
+
+  # ... (Your existing code for other choices) ...
+
+  if choice == 8:  # Moved this block outside the while loop
+      current_time = time.time()
+      time_difference = current_time - last_transaction_time
+      if time_difference <= 60 and last_transaction_details:  # Check if within 1 minute and details exist
+          # Reverse the transaction using last_transaction_details
+          sender_id = last_transaction_details["sender_id"]
+          recipient_id = last_transaction_details["recipient_id"]
+          amount = last_transaction_details["amount"]
+
+          # Get the row indices for sender and recipient
+          sender_row_index = worksheet.col_values(1).index(sender_id) + 1
+          recipient_row_index = worksheet.col_values(1).index(recipient_id) + 1
+
+          # Update balances (add amount back to sender, subtract from recipient)
+          sender_balance = float(worksheet.cell(sender_row_index, 3).value) + amount
+          recipient_balance = float(worksheet.cell(recipient_row_index, 3).value) - amount
+
+          worksheet.update_cell(sender_row_index, 3, sender_balance)
+          worksheet.update_cell(recipient_row_index, 3, recipient_balance)
+
+          print("Transaction reversed successfully.")
+          last_transaction_details = {}  # Clear transaction details after reversal
+      else:
+          print("Sorry, the time limit for reversing the transaction has expired or no previous transaction found.")
+
+  print("\n\n Thank you for using our services, hope to see you again soon")
