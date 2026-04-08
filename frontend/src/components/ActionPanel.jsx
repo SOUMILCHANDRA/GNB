@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import Button from "./ui/Button";
-import { Send, Plus, Minus, History, Timer, AlertCircle } from "lucide-react";
+import { Send, Plus, Minus, Timer, AlertTriangle, ShieldAlert } from "lucide-react";
 
-const ActionPanel = ({ onTransfer, onReverse }) => {
+export default function ActionPanel({ onTransfer, onReverse }) {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isReversible, setIsReversible] = useState(true);
+  const totalDuration = 60;
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -16,74 +16,117 @@ const ActionPanel = ({ onTransfer, onReverse }) => {
     }
   }, [timeLeft]);
 
+  const progress = (timeLeft / totalDuration) * 283; // 283 is approx circumference for r=45
+
   return (
-    <div className="space-y-6 h-full flex flex-col justify-center">
+    <div className="space-y-8">
+      {/* Quick Ops Grid */}
       <div className="grid grid-cols-2 gap-4">
-        <Button variant="outline" className="h-24 flex-col gap-2 border-primary/20 hover:border-primary/50 group">
-          <Plus className="w-6 h-6 text-primary group-hover:scale-125 transition-transform" />
-          <span className="text-xs font-bold tracking-widest uppercase">Deposit</span>
-        </Button>
-        <Button variant="outline" className="h-24 flex-col gap-2 border-white/10 hover:border-white/30 group">
-          <Minus className="w-6 h-6 group-hover:scale-125 transition-transform" />
-          <span className="text-xs font-bold tracking-widest uppercase">Withdraw</span>
-        </Button>
+        <motion.button
+          whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.2)" }}
+          whileTap={{ scale: 0.98 }}
+          className="h-24 rounded-2xl border border-white/5 bg-white/[0.03] flex flex-col items-center justify-center gap-2 group transition-colors"
+        >
+          <Plus className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform" />
+          <span className="text-[10px] font-black tracking-[0.2em] uppercase text-white/60 group-hover:text-white">Deposit</span>
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.2)" }}
+          whileTap={{ scale: 0.98 }}
+          className="h-24 rounded-2xl border border-white/5 bg-white/[0.03] flex flex-col items-center justify-center gap-2 group transition-colors"
+        >
+          <Minus className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform" />
+          <span className="text-[10px] font-black tracking-[0.2em] uppercase text-white/60 group-hover:text-white">Withdraw</span>
+        </motion.button>
       </div>
 
-      <Button variant="primary" size="lg" className="w-full py-6 group" onClick={onTransfer}>
-        <Send className="mr-3 w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+      {/* Hero Action: Initiate Transfer */}
+      <motion.button
+        whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(0,229,255,0.3)" }}
+        whileTap={{ scale: 0.98 }}
+        onClick={onTransfer}
+        className="w-full py-6 rounded-2xl bg-cyan-500 text-black font-black tracking-[0.2em] flex items-center justify-center gap-3 relative overflow-hidden group"
+      >
+        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
+        <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
         INITIATE TRANSFER
-      </Button>
+      </motion.button>
 
-      {/* Signature Feature: Reverse Transaction */}
-      <div className="relative pt-4">
-        <div className="flex justify-between items-end mb-3">
-          <div>
-            <h4 className="text-xs font-bold text-white/40 tracking-[0.2em] uppercase">Emergency Protocol</h4>
-            <p className="text-sm font-bold text-white/80">Reverse Last Move</p>
+      {/* EMERGENCY PROTOCOL: REVERSE SYSTEM */}
+      <div className="pt-6 border-t border-white/5">
+        <div className="flex justify-between items-center mb-6">
+          <div className="space-y-1">
+            <h4 className="text-[10px] font-black text-red-500 tracking-[0.3em] uppercase flex items-center gap-2">
+              <ShieldAlert className="w-3 h-3 animate-pulse" />
+              Emergency Protocol
+            </h4>
+            <p className="text-xs font-bold text-white/80">60s Transaction Reversal</p>
           </div>
-          <div className="flex items-center gap-2 text-accent font-mono text-xl font-bold bg-accent/10 px-3 py-1 rounded-lg border border-accent/20">
-            <Timer className="w-4 h-4 animate-pulse" />
-            00:{timeLeft.toString().padStart(2, '0')}
+          
+          {/* Circular SVG Timer */}
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            <svg className="w-full h-full rotate-[-90deg]">
+              <circle
+                cx="32"
+                cy="32"
+                r="28"
+                stroke="currentColor"
+                strokeWidth="3"
+                fill="transparent"
+                className="text-white/5"
+              />
+              <motion.circle
+                cx="32"
+                cy="32"
+                r="28"
+                stroke="currentColor"
+                strokeWidth="3"
+                fill="transparent"
+                strokeDasharray="176" // 2 * pi * 28
+                animate={{ strokeDashoffset: 176 - (176 * (timeLeft / totalDuration)) }}
+                className={isReversible ? "text-red-500 shadow-[0_0_10px_#ef4444]" : "text-white/20"}
+              />
+            </svg>
+            <span className={`absolute font-mono font-black text-xs ${isReversible ? "text-red-500" : "text-white/20"}`}>
+              {timeLeft}s
+            </span>
           </div>
         </div>
 
-        <motion.div
-           animate={isReversible ? { 
-             boxShadow: [
-               "0 0 0px rgba(255,0,122,0)", 
-               "0 0 20px rgba(255,0,122,0.3)", 
-               "0 0 0px rgba(255,0,122,0)"
-             ] 
-           } : {}}
-           transition={{ duration: 2, repeat: Infinity }}
-           className="rounded-2xl overflow-hidden"
+        <motion.button
+          disabled={!isReversible}
+          onClick={onReverse}
+          whileHover={isReversible ? { scale: 1.02, boxShadow: "0 0 40px rgba(239,68,68,0.2)" } : {}}
+          whileTap={isReversible ? { scale: 0.98 } : {}}
+          className={`w-full py-5 rounded-2xl border flex items-center justify-center gap-3 transition-all duration-500 ${
+            isReversible 
+              ? "bg-red-500/10 border-red-500/50 text-red-500 hover:bg-red-500/20" 
+              : "bg-white/5 border-white/10 text-white/20 cursor-not-allowed"
+          }`}
         >
-          <Button 
-            variant="accent" 
-            className="w-full py-6 disabled:bg-white/5 disabled:text-white/20 disabled:border-white/10"
-            disabled={!isReversible}
-            onClick={onReverse}
-          >
-            {isReversible ? "REVERSE TRANSACTION" : "TIME EXPIRED"}
-          </Button>
-        </motion.div>
-
+          {isReversible ? (
+            <>
+              <AlertTriangle className="w-5 h-5 animate-pulse" />
+              <span className="font-black tracking-[0.2em]">REVERSAL WINDOW ACTIVE</span>
+            </>
+          ) : (
+            <span className="font-black tracking-[0.2em] opacity-40">PROTOCOL EXPIRED</span>
+          )}
+        </motion.button>
+        
         <AnimatePresence>
           {isReversible && (
             <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="mt-3 text-[10px] text-accent/60 font-medium flex items-center gap-1"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-4 text-[10px] text-red-400 font-bold tracking-wider text-center flex items-center justify-center gap-2 animate-pulse"
             >
-              <AlertCircle className="w-3 h-3" />
-              Did the bro cheat? You have {timeLeft} seconds to take it back.
+              ⚠ SYSTEM VULNERABLE DURING REVERSAL ⚠
             </motion.p>
           )}
         </AnimatePresence>
       </div>
     </div>
   );
-};
-
-export default ActionPanel;
+}
