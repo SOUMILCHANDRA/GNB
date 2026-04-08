@@ -4,6 +4,7 @@ import SuitUpAnimation from "./components/SuitUpAnimation";
 import Dashboard from "./components/Dashboard";
 import CursorGlow from "./components/CursorGlow";
 import Register from "./components/Register";
+import SmoothScroll from "./components/SmoothScroll";
 import { AnimatePresence } from "framer-motion";
 
 export default function App() {
@@ -31,29 +32,31 @@ export default function App() {
   }
 
   return (
-    <div className="bg-black min-h-screen text-white">
-      <CursorGlow />
-      <AnimatePresence mode="wait">
-        {stage === "intro" && (
-          <IntroScreen 
-            key="intro" 
-            user={user} 
-            onStart={() => setStage("anim")} 
-          />
-        )}
-        
-        {stage === "anim" && (
-          <SuitUpAnimation 
-            key="anim" 
-            user={user} 
-            onComplete={() => setStage("dashboard")} 
-          />
-        )}
-        
-        {stage === "dashboard" && (
-          <Dashboard key="dashboard" user={user} />
-        )}
-      </AnimatePresence>
-    </div>
+    <SmoothScroll>
+      <div className="bg-black min-h-screen text-white">
+        <CursorGlow />
+        <AnimatePresence mode="wait">
+          {stage === "intro" && (
+            <IntroScreen 
+              key="intro" 
+              user={user} 
+              onStart={() => setStage("anim")} 
+            />
+          )}
+          
+          {stage === "anim" && (
+            <SuitUpAnimation 
+              key="anim" 
+              user={user} 
+              onComplete={() => setStage("dashboard")} 
+            />
+          )}
+          
+          {stage === "dashboard" && (
+            <Dashboard key="dashboard" user={user} />
+          )}
+        </AnimatePresence>
+      </div>
+    </SmoothScroll>
   );
 }
