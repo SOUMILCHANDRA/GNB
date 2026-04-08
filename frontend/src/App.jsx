@@ -2,6 +2,7 @@ import { useState } from "react";
 import IntroScreen from "./components/IntroScreen";
 import SuitUpAnimation from "./components/SuitUpAnimation";
 import Dashboard from "./components/Dashboard";
+import CursorGlow from "./components/CursorGlow";
 import { AnimatePresence } from "framer-motion";
 
 export default function App() {
@@ -9,6 +10,7 @@ export default function App() {
 
   return (
     <div className="bg-black min-h-screen text-white">
+      <CursorGlow />
       <AnimatePresence mode="wait">
         {stage === "intro" && (
           <IntroScreen key="intro" onStart={() => setStage("anim")} />
