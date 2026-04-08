@@ -1,46 +1,151 @@
 # 👔 Goliath National Bank (GNB)
 
-> **"Your Financial Wingman"** — *Debit or credit? No worries - we got you, bro!*
-
-Welcome to **Goliath National Bank (GNB)**, the world's first bank that isn't boring. Inspired by the legendary Barney Stinson, GNB is here to make your financial life as awesome as a well-tailored suit. 
-
-## 🚀 Concept
-GNB is a fictional banking system designed to be your wingman. While other banks are boring and classy-less, GNB is **legen ... wait for it ... dary!** 
-
-*Note: This is a fictional project. Don't take life too seriously, bro!*
-
-## 🛠 Features
-GNB comes packed with features that a regular bank would never even try to offer:
-
-1.  **Check Balance**: See how much cash you've got for your next night out.
-2.  **Suit Up (Create Account)**: Join the elite and get your unique ID.
-3.  **A Bro in Need (Withdraw)**: Get some cash when life gets tough.
-4.  **Trust Me Bro (Deposit)**: Store your riches safely in our vault.
-5.  **The "Classic Schmosby" (Delete Account)**: For when you say "I love you" on a first date and need to disappear.
-6.  **Left at the Altar (Bankruptcy)**: Declare bankruptcy and start fresh (sets balance to zero).
-7.  **Make a Bro's Life Awesome (Transfer)**: Send money to your friends.
-8.  **Did He Cheat? (Reverse Transaction)**: Instant regret? Reverse your last transfer within 60 seconds.
-
-## 💻 Tech Stack
-- **Language**: Python
-- **Platform**: Google Colab (Optimized for Colab's authentication flow)
-- **Database**: Google Sheets (via `gspread`)
-- **Storage**: `GNB DATA store.xlsx` (Local backup/template)
-
-## ⚙️ Setup & Installation
-1.  **Open in Google Colab**: This project is designed to run in a Google Colab environment.
-2.  **Google Sheets Integration**:
-    - The code uses a Google Sheet as a back-end database.
-    - Create a Google Sheet named `GNB DATA store`.
-    - Columns should be: `ID`, `Name`, `Balance`.
-    - Update the `spreadsheet_id` in the code if you're using your own sheet.
-3.  **Authentication**: The script will prompt you to authenticate with your Google account to access your spreadsheets.
-
-## 📖 How to Run
-1.  Open the `GNB code.ipynb` file in Google Colab.
-2.  Run the first cell to authenticate and connect to your Google Sheet.
-3.  Follow the interactive prompts in the terminal.
-4.  **Suit Up!**
+> **"Your Financial Wingman."**
+> *Debit or credit? Relax. We got you, bro.*
 
 ---
-*"True story."* — **Management, Goliath National Bank**
+
+## 🕶️ The Pitch
+
+Welcome to **Goliath National Bank (GNB)** — the only banking system that understands two things:
+
+1. Money
+2. Vibes
+
+Inspired by the one and only **Barney Stinson**, this isn’t just a banking project — it’s a **personality-driven financial system**.
+
+Because let’s be honest…
+Most banks feel like taxes in human form.
+
+**GNB?**
+👉 GNB is *legen — wait for it — dary.*
+
+---
+
+## 🚀 What Makes GNB Different?
+
+This isn’t just CRUD operations disguised as a project.
+This is a **character-driven system design** with humor, identity, and interaction.
+
+Every feature is rebranded, reimagined, and made… awesome.
+
+---
+
+## 🛠 Features (a.k.a. The Playbook)
+
+| Feature                                        | What It Does                            |
+| ---------------------------------------------- | --------------------------------------- |
+| 🧾 **Check Balance**                           | Know how much damage you can do tonight |
+| 👔 **Suit Up (Create Account)**                | Join the elite. Get your unique ID      |
+| 💸 **A Bro in Need (Withdraw)**                | Cash out when life hits                 |
+| 🏦 **Trust Me Bro (Deposit)**                  | Secure your money like a legend         |
+| 💔 **The "Classic Schmosby" (Delete Account)** | Emotional damage? Disappear.            |
+| 🔥 **Left at the Altar (Bankruptcy)**          | Reset. Rebuild. Rise again.             |
+| 🤝 **Make a Bro's Life Awesome (Transfer)**    | Send money, build loyalty               |
+| ⏪ **Did He Cheat? (Reverse Transaction)**      | Undo regret within 60 seconds           |
+
+---
+
+## 🧠 Under the Hood
+
+This project may *look* fun — but it's built with real backend logic:
+
+* **Language:** Python
+* **Environment:** Google Colab
+* **Database:** Google Sheets (`gspread`)
+* **Backup Storage:** Excel (`.xlsx`)
+
+**Concepts Used:**
+
+* Data persistence via external APIs
+* Structured transaction handling
+* Reversible operations (state tracking)
+* CLI-based interaction design
+
+---
+
+## ⚙️ Setup & Installation
+
+### 1️⃣ Open in Colab
+
+Run the notebook directly in **Google Colab**
+
+### 2️⃣ Setup Database
+
+Create a Google Sheet:
+
+**Name:** `GNB DATA store`
+**Columns:**
+
+```
+ID | Name | Balance
+```
+
+### 3️⃣ Connect Your Sheet
+
+* Copy your `spreadsheet_id`
+* Replace it in the code
+
+### 4️⃣ Authenticate
+
+* Run the first cell
+* Grant Google access
+
+---
+
+## ▶️ How to Run
+
+1. Open `GNB code.ipynb`
+2. Run all cells
+3. Follow CLI prompts
+4. **Suit up and start banking**
+
+---
+
+## 🎯 Why This Project Stands Out
+
+Most student projects:
+
+* Generic naming
+* No personality
+* Basic CRUD
+
+**This project:**
+
+* Strong thematic design
+* Memorable UX (even in CLI)
+* Creative feature naming
+* Functional + fun
+
+👉 It shows you can build AND brand.
+
+---
+
+## 🧩 Future Upgrades (Because we don't settle)
+
+* Web UI (React dashboard 👀)
+* Authentication system (real login)
+* Transaction history tracking
+* AI-powered spending insights
+* Mobile-first version
+
+---
+
+## ⚠️ Disclaimer
+
+This is a **fictional banking system** created for learning and fun.
+No real money. No real liability. Only legendary energy.
+
+---
+
+## 🕴️ Final Word
+
+> *“When I get sad, I stop being sad and be awesome instead.”*
+
+That’s not just life advice.
+That’s GNB.
+
+---
+
+**— Management, Goliath National Bank**
+**— Head, Soumil Chandra**
