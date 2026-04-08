@@ -30,11 +30,11 @@ const itemVariants = {
   }
 };
 
-export default function Dashboard() {
+export default function Dashboard({ user }) {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
-  const [balance, setBalance] = useState(MOCK_USER.balance);
+  const [balance, setBalance] = useState(user?.balance || MOCK_USER.balance);
 
   const handleTransferComplete = ({ id, amount }) => {
     const numAmount = parseFloat(amount);
@@ -116,7 +116,7 @@ export default function Dashboard() {
                       <UserCheck className="w-8 h-8 text-primary mb-4 transition-transform group-hover:scale-110" />
                       <div>
                         <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Authenticated As</p>
-                        <h3 className="text-xl font-display font-bold text-white">{MOCK_USER.name}</h3>
+                        <h3 className="text-xl font-display font-bold text-white">{user?.name || MOCK_USER.name}</h3>
                         <p className="text-sm text-primary font-medium mt-1">ID: #{MOCK_USER.id}</p>
                       </div>
                     </div>

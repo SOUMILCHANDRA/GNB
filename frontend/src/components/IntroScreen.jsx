@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function IntroScreen({ onStart }) {
+export default function IntroScreen({ onStart, user }) {
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-black text-white relative overflow-hidden">
       {/* Background Animated Elements */}
@@ -45,6 +45,17 @@ export default function IntroScreen({ onStart }) {
         >
           Your Financial Wingman
         </motion.p>
+        
+        {user && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+            className="mt-4 text-cyan-400 font-mono text-sm tracking-widest uppercase"
+          >
+            Welcome back, {user.name}
+          </motion.p>
+        )}
 
         <motion.button
           whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(6,182,212,0.6)" }}
