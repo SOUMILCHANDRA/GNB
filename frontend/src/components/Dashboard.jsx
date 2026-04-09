@@ -8,7 +8,7 @@ import TransferModal from "./TransferModal";
 import { MOCK_USER, MOCK_TRANSACTIONS } from "../data/mock";
 import GlassCard from "./ui/GlassCard";
 import { TrendingUp, UserCheck, Shield, Activity, Zap, CheckCircle } from "lucide-react";
-import ParticleBg from "./ParticleBg";
+import SystemCore from "./SystemCore";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -88,8 +88,8 @@ export default function Dashboard({ user }) {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
-      {/* Background Layer: Continuos Particles */}
-      <ParticleBg />
+      {/* Background Layer: 3D System Core */}
+      <SystemCore />
       
       {/* Mid Layer: Mesh Gradients */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-mesh" />
