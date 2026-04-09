@@ -53,6 +53,12 @@ export const useRealtime = (userId) => {
         (payload) => {
           if (payload.new.sender_id === userId || payload.new.receiver_id === userId) {
             addTransaction(payload.new);
+            setSystemStatus('ACTIVE');
+            setTimeout(() => {
+               // Re-check balance from store for correct status
+               const currentBalance = useBankingStore.getState().balance;
+               setSystemStatus(currentBalance < 1000 ? 'CRITICAL' : 'STABLE');
+            }, 2000);
           }
         }
       )
