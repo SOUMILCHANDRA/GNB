@@ -39,6 +39,7 @@ export default function Dashboard({ user }) {
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
   const [balance, setBalance] = useState(user?.balance || MOCK_USER.balance);
+  const [isReversing, setIsReversing] = useState(false);
 
   const handleTransferComplete = ({ id, amount }) => {
     const numAmount = parseFloat(amount);
@@ -54,7 +55,34 @@ export default function Dashboard({ user }) {
   };
 
   const handleReverse = () => {
-    console.log("Transaction Reversed!");
+    if (isReversing) return;
+    
+    setIsReversing(true);
+    
+    // GSAP Time Reversal Effect
+    const tl = gsap.timeline({
+      onComplete: () => setIsReversing(false)
+    });
+
+    tl.to("body", { backgroundColor: "#1a000a", duration: 0.2 })
+      .to(".main-card", { 
+        x: () => (Math.random() - 0.5) * 20, 
+        y: () => (Math.random() - 0.5) * 20,
+        opacity: 0.8,
+        duration: 0.1, 
+        repeat: 10, 
+        yoyo: true 
+      })
+      .to(".telemetry-card", { 
+        skewX: 10, 
+        opacity: 0.5, 
+        duration: 0.1, 
+        repeat: 10, 
+        yoyo: true 
+      }, 0)
+      .to("body", { backgroundColor: "#000000", duration: 0.5 });
+      
+    console.log("PROTOCOL: TIME_REVERSAL_INITIATED");
   };
 
   useGSAP(() => {
@@ -89,7 +117,7 @@ export default function Dashboard({ user }) {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
       {/* Background Layer: 3D System Core */}
-      <SystemCore />
+      <SystemCore isReversing={isReversing} />
       
       {/* Mid Layer: Mesh Gradients */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-mesh" />

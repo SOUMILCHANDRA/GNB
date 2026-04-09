@@ -3,14 +3,24 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Projector, Sphere, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
-function Orb() {
+function Orb({ isReversing }) {
   const meshRef = useRef();
+  const materialRef = useRef();
 
   useFrame((state) => {
     const { clock } = state;
     if (meshRef.current) {
-      meshRef.current.rotation.x = clock.getElapsedTime() * 0.2;
-      meshRef.current.rotation.y = clock.getElapsedTime() * 0.3;
+      meshRef.current.rotation.x = clock.getElapsedTime() * (isReversing ? -0.8 : 0.2);
+      meshRef.current.rotation.y = clock.getElapsedTime() * (isReversing ? -1.2 : 0.3);
+    }
+    
+    if (materialRef.current) {
+      materialRef.current.distort = THREE.MathUtils.lerp(
+        materialRef.current.distort,
+        isReversing ? 0.8 : 0.4,
+        0.05
+      );
+      materialRef.current.speed = isReversing ? 10 : 3;
     }
   });
 
@@ -18,12 +28,13 @@ function Orb() {
     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
       <Sphere ref={meshRef} args={[1, 64, 64]}>
         <MeshDistortMaterial
-          color="#00e5ff"
+          ref={materialRef}
+          color={isReversing ? "#ff007a" : "#00e5ff"}
           speed={3}
           distort={0.4}
           radius={1}
-          emissive="#00e5ff"
-          emissiveIntensity={2}
+          emissive={isReversing ? "#ff007a" : "#00e5ff"}
+          emissiveIntensity={isReversing ? 5 : 2}
           transparent
           opacity={0.6}
           wireframe
@@ -85,16 +96,16 @@ function ParticleField({ count = 200 }) {
   );
 }
 
-export default function SystemCore() {
+export default function SystemCore({ isReversing }) {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none opacity-50">
       <Canvas>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={2} color="#00e5ff" />
+        <pointLight position={[10, 10, 10]} intensity={2} color={isReversing ? "#ff007a" : "#00e5ff"} />
         <pointLight position={[-10, -10, -10]} intensity={1} color="#7000ff" />
         
-        <Orb />
+        <Orb isReversing={isReversing} />
         <ParticleField count={400} />
         <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
         
