@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Projector, Sphere, Stars, PerspectiveCamera } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Sphere, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Orb({ isReversing }) {
@@ -98,8 +98,8 @@ function ParticleField({ count = 200 }) {
 
 export default function SystemCore({ isReversing }) {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-50">
-      <Canvas>
+    <div className="fixed inset-0 z-[-10] pointer-events-none opacity-100">
+      <Canvas style={{ height: '100%', width: '100%' }}>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={2} color={isReversing ? "#ff007a" : "#00e5ff"} />

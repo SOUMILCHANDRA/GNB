@@ -120,7 +120,7 @@ export default function Dashboard({ user }) {
       <SystemCore isReversing={isReversing} />
       
       {/* Mid Layer: Mesh Gradients */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-mesh" />
+      <div className="fixed inset-0 pointer-events-none z-[-5] opacity-20 bg-mesh" />
 
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       

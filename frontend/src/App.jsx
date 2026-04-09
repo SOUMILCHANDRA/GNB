@@ -33,7 +33,8 @@ export default function App() {
 
   return (
     <SmoothScroll>
-      <div className="bg-black min-h-screen text-white">
+      <div className="min-h-screen text-white relative">
+        <div className="fixed inset-0 bg-black z-[-20]" />
         <CursorGlow />
         <AnimatePresence mode="wait">
           {stage === "intro" && (
