@@ -1,151 +1,86 @@
 # 👔 Goliath National Bank (GNB)
 
-> **"Your Financial Wingman."**
-> *Debit or credit? Relax. We got you, bro.*
+> **"Your Financial Wingman."**  
+> *Banking is a digital universe. Suit up.*
 
 ---
 
-## 🕶️ The Pitch
+## 🕶️ The Evolution: System Experience Architecture
 
-Welcome to **Goliath National Bank (GNB)** — the only banking system that understands two things:
+Welcome to the new era of **Goliath National Bank (GNB)**. Moving beyond standard financial dashboards, GNB is now an **Immersive System Interface** — a high-performance, cinematic banking universe built with the exact stack used by elite design agencies.
 
-1. Money
-2. Vibes
-
-Inspired by the one and only **Barney Stinson**, this isn’t just a banking project — it’s a **personality-driven financial system**.
-
-Because let’s be honest…
-Most banks feel like taxes in human form.
-
-**GNB?**
-👉 GNB is *legen — wait for it — dary.*
+It’s not just a project. It's an **Active System Interface**.
 
 ---
 
-## 🚀 What Makes GNB Different?
+## 🚀 The Elite Stack (Industry Standard)
 
-This isn’t just CRUD operations disguised as a project.
-This is a **character-driven system design** with humor, identity, and interaction.
+To build a world that feels "designed for you," we utilize a heavy-duty architecture:
 
-Every feature is rebranded, reimagined, and made… awesome.
-
----
-
-## 🛠 Features (a.k.a. The Playbook)
-
-| Feature                                        | What It Does                            |
-| ---------------------------------------------- | --------------------------------------- |
-| 🧾 **Check Balance**                           | Know how much damage you can do tonight |
-| 👔 **Suit Up (Create Account)**                | Join the elite. Get your unique ID      |
-| 💸 **A Bro in Need (Withdraw)**                | Cash out when life hits                 |
-| 🏦 **Trust Me Bro (Deposit)**                  | Secure your money like a legend         |
-| 💔 **The "Classic Schmosby" (Delete Account)** | Emotional damage? Disappear.            |
-| 🔥 **Left at the Altar (Bankruptcy)**          | Reset. Rebuild. Rise again.             |
-| 🤝 **Make a Bro's Life Awesome (Transfer)**    | Send money, build loyalty               |
-| ⏪ **Did He Cheat? (Reverse Transaction)**      | Undo regret within 60 seconds           |
+*   **⚡ GSAP (GreenSock)**: Orchestrating complex system timelines, scroll-driven states, and HUD "System Scan" entry sequences.
+*   **🌌 Three.js & React Three Fiber**: Powering the **Financial System Core** — a real-time, wireframe 3D engine that reacts to user state.
+*   **🎿 Lenis**: Implementing smooth, inertia-based scrolling for that premium "space-flight" navigation feel.
+*   **🎨 Framer Motion**: Handling micro-interactions, spring physics, and layout transitions.
+*   **💎 Tailwind CSS**: Custom glassmorphism and depth stacking.
 
 ---
 
-## 🧠 Under the Hood
+## 🛠 Features (The Active HUD)
 
-This project may *look* fun — but it's built with real backend logic:
+| Feature | The Experience |
+| :--- | :--- |
+| 🧬 **System Core** | A floating, 3D financial orb that represents your account's "health." |
+| 👔 **Suit-Up Protocol** | A personalized, multi-stage narrative sequence that recognizes the user. |
+| ⏪ **Time Reversal** | The USP. An emergency protocol that "rewinds" time with visual glitches and shader distortions. |
+| 🧭 **Scroll Journey** | Scroll isn't distance; it's depth. Navigation shifts the UI in 3D space via `ScrollTrigger`. |
+| 👁️ **VOID Mode** | A high-fidelity sandbox. Clear the HUD to fully experience the background core and particles. |
 
-* **Language:** Python
-* **Environment:** Google Colab
-* **Database:** Google Sheets (`gspread`)
-* **Backup Storage:** Excel (`.xlsx`)
+---
 
-**Concepts Used:**
+## 🧠 Under the Hood (Phase 3 Complete)
 
-* Data persistence via external APIs
-* Structured transaction handling
-* Reversible operations (state tracking)
-* CLI-based interaction design
+The interface is built on a **4-Layer Depth System**:
+
+1.  **Deepcore**: The 3D Three.js orb & starfield.
+2.  **Network**: The connecting `tsparticles` lines (the "Financial Web").
+3.  **Atmosphere**: Mesh gradients and subtle noise for premium texture.
+4.  **Interaction HUD**: The Glass-card controls, telemetry widgets, and command center.
+
+### ⏪ Time Reversal Logic:
+When the "Reverse Transaction" protocol is initiated, the system triggers a **physical rewind**:
+-   **GSAP** skews the UI cards to simulate high-speed movement.
+-   **Shaders** shift the 3D Core's material from Cyan (Stable) to Emergency Red (Vulnerable).
+-   **Time** physically reverses in the 3D rotation vectors.
 
 ---
 
 ## ⚙️ Setup & Installation
 
-### 1️⃣ Open in Colab
+```bash
+# Clone the repository
+git clone https://github.com/SOUMILCHANDRA/GNB.git
 
-Run the notebook directly in **Google Colab**
+# Enter the frontend directory
+cd GNB/frontend
 
-### 2️⃣ Setup Database
+# Install the high-end dependencies
+npm install
 
-Create a Google Sheet:
-
-**Name:** `GNB DATA store`
-**Columns:**
-
+# Launch the System
+npm run dev
 ```
-ID | Name | Balance
-```
-
-### 3️⃣ Connect Your Sheet
-
-* Copy your `spreadsheet_id`
-* Replace it in the code
-
-### 4️⃣ Authenticate
-
-* Run the first cell
-* Grant Google access
-
----
-
-## ▶️ How to Run
-
-1. Open `GNB code.ipynb`
-2. Run all cells
-3. Follow CLI prompts
-4. **Suit up and start banking**
-
----
-
-## 🎯 Why This Project Stands Out
-
-Most student projects:
-
-* Generic naming
-* No personality
-* Basic CRUD
-
-**This project:**
-
-* Strong thematic design
-* Memorable UX (even in CLI)
-* Creative feature naming
-* Functional + fun
-
-👉 It shows you can build AND brand.
-
----
-
-## 🧩 Future Upgrades (Because we don't settle)
-
-* Web UI (React dashboard 👀)
-* Authentication system (real login)
-* Transaction history tracking
-* AI-powered spending insights
-* Mobile-first version
-
----
-
-## ⚠️ Disclaimer
-
-This is a **fictional banking system** created for learning and fun.
-No real money. No real liability. Only legendary energy.
 
 ---
 
 ## 🕴️ Final Word
 
+Most portfolios show features. GNB shows **Experience**. 
+
 > *“When I get sad, I stop being sad and be awesome instead.”*
 
-That’s not just life advice.
-That’s GNB.
+This site doesn't just manage your money. It makes you feel like the person who owns it.
 
 ---
 
-**— Management, Goliath National Bank**
-**— Head, Soumil Chandra**
+**— Management, Goliath National Bank**  
+**— Designed by Soumil Chandra & Antigravity**
