@@ -8,11 +8,13 @@ import TransferModal from "./TransferModal";
 import { MOCK_USER, MOCK_TRANSACTIONS } from "../data/mock";
 import GlassCard from "./ui/GlassCard";
 import { TrendingUp, UserCheck, Shield, Activity, Zap, CheckCircle } from "lucide-react";
+import ParticleBg from "./ParticleBg";
 import SystemCore from "./SystemCore";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -112,12 +114,41 @@ export default function Dashboard({ user }) {
       yoyo: true,
       ease: "steps(1)"
     });
+
+    // Scroll Driven Parallax / State Changes
+    gsap.to(".main-card", {
+      scrollTrigger: {
+        trigger: ".main-card",
+        start: "top center",
+        end: "bottom top",
+        scrub: 1
+      },
+      y: -50,
+      scale: 0.98,
+      opacity: 0.9,
+      rotationX: 2
+    });
+
+    gsap.to(".telemetry-card", {
+      scrollTrigger: {
+        trigger: ".telemetry-card",
+        start: "top bottom",
+        end: "top center",
+        scrub: 1
+      },
+      x: 0,
+      opacity: 1,
+      stagger: 0.1
+    });
   });
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
-      {/* Background Layer: 3D System Core */}
+      {/* Background Layer 1: 3D System Core */}
       <SystemCore isReversing={isReversing} />
+      
+      {/* Background Layer 2: Connecting Particles */}
+      <ParticleBg />
       
       {/* Mid Layer: Mesh Gradients */}
       <div className="fixed inset-0 pointer-events-none z-[-5] opacity-20 bg-mesh" />
@@ -125,114 +156,130 @@ export default function Dashboard({ user }) {
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <main className="container mx-auto px-6 pb-20 pt-28 relative z-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className="space-y-8"
-        >
-          {/* F1 Telemetry Row */}
-          <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
-              <Activity className="hud-flicker w-4 h-4 text-cyan-500" />
-              <div>
-                <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">System Status</p>
-                <p className="text-xs font-mono font-bold text-cyan-400">ACTIVE</p>
+        <AnimatePresence mode="wait">
+          {activeTab === "dashboard" ? (
+            <motion.div
+              key="dashboard-view"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-8"
+            >
+              {/* F1 Telemetry Row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
+                  <Activity className="hud-flicker w-4 h-4 text-cyan-500" />
+                  <div>
+                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">System Status</p>
+                    <p className="text-xs font-mono font-bold text-cyan-400">ACTIVE</p>
+                  </div>
+                </div>
+                <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
+                  <Zap className="hud-flicker w-4 h-4 text-yellow-500" />
+                  <div>
+                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">TX Speed</p>
+                    <p className="text-xs font-mono font-bold">0.21s</p>
+                  </div>
+                </div>
+                <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
+                  <CheckCircle className="hud-flicker w-4 h-4 text-green-500" />
+                  <div>
+                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Success Rate</p>
+                    <p className="text-xs font-mono font-bold">100%</p>
+                  </div>
+                </div>
+                <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
+                  <TrendingUp className="hud-flicker w-4 h-4 text-purple-500" />
+                  <div>
+                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Market Drift</p>
+                    <p className="text-xs font-mono font-bold">+4.2%</p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
-              <Zap className="hud-flicker w-4 h-4 text-yellow-500" />
-              <div>
-                <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">TX Speed</p>
-                <p className="text-xs font-mono font-bold">0.21s</p>
-              </div>
-            </div>
-            <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
-              <CheckCircle className="hud-flicker w-4 h-4 text-green-500" />
-              <div>
-                <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Success Rate</p>
-                <p className="text-xs font-mono font-bold">100%</p>
-              </div>
-            </div>
-            <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
-              <TrendingUp className="hud-flicker w-4 h-4 text-purple-500" />
-              <div>
-                <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Market Drift</p>
-                <p className="text-xs font-mono font-bold">+4.2%</p>
-              </div>
-            </div>
-          </motion.div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-              <div className="flex flex-col md:flex-row gap-6">
-                <motion.div variants={itemVariants} className="main-card flex-1">
-                   <BalanceCard balance={balance} />
-                </motion.div>
-                
-                <motion.div variants={itemVariants} className="main-card flex-1 flex flex-col gap-6">
-                  <GlassCard className="flex-1 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group">
-                    <div className="flex flex-col h-full justify-between">
-                      <UserCheck className="w-8 h-8 text-primary mb-4 transition-transform group-hover:scale-110" />
-                      <div>
-                        <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Authenticated As</p>
-                        <h3 className="text-xl font-display font-bold text-white">{user?.name || MOCK_USER.name}</h3>
-                        <p className="text-sm text-primary font-medium mt-1">ID: #{MOCK_USER.id}</p>
-                      </div>
+              {/* Main Content Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className="main-card flex-1">
+                       <BalanceCard balance={balance} />
                     </div>
-                  </GlassCard>
-                  
-                  <GlassCard className="flex-1 border-secondary/20 bg-secondary/5 hover:bg-secondary/10 transition-colors cursor-pointer group">
-                    <div className="flex flex-col h-full justify-between">
-                      <Shield className="w-8 h-8 text-secondary mb-4 transition-transform group-hover:scale-110" />
-                      <div>
-                        <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Security Status</p>
-                        <h3 className="text-xl font-display font-bold text-white">IRONCLAD</h3>
-                        <div className="flex items-center gap-2 mt-2">
-                          <div className="flex gap-1">
-                            {[1, 2, 3].map(i => (
-                              <div key={i} className="w-4 h-1 rounded-full bg-secondary shadow-[0_0_8px_rgba(112,0,255,0.6)] animate-pulse" />
-                            ))}
+                    
+                    <div className="main-card flex-1 flex flex-col gap-6">
+                      <GlassCard className="flex-1 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group">
+                        <div className="flex flex-col h-full justify-between">
+                          <UserCheck className="w-8 h-8 text-primary mb-4 transition-transform group-hover:scale-110" />
+                          <div>
+                            <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Authenticated As</p>
+                            <h3 className="text-xl font-display font-bold text-white">{user?.name || MOCK_USER.name}</h3>
+                            <p className="text-sm text-primary font-medium mt-1">ID: #{MOCK_USER.id}</p>
                           </div>
                         </div>
+                      </GlassCard>
+                      
+                      <GlassCard className="flex-1 border-secondary/20 bg-secondary/5 hover:bg-secondary/10 transition-colors cursor-pointer group">
+                        <div className="flex flex-col h-full justify-between">
+                          <Shield className="w-8 h-8 text-secondary mb-4 transition-transform group-hover:scale-110" />
+                          <div>
+                            <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Security Status</p>
+                            <h3 className="text-xl font-display font-bold text-white">IRONCLAD</h3>
+                            <div className="flex items-center gap-2 mt-2">
+                              <div className="flex gap-1">
+                                {[1, 2, 3].map(i => (
+                                  <div key={i} className="w-4 h-1 rounded-full bg-secondary shadow-[0_0_8px_rgba(112,0,255,0.6)] animate-pulse" />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </GlassCard>
+                    </div>
+                  </div>
+
+                  <div>
+                    <TransactionHistory transactions={transactions} />
+                  </div>
+                </div>
+
+                {/* Command Center Column */}
+                <div className="main-card h-full">
+                  <GlassCard className="h-full border-white/5 bg-white/[0.02]">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_10px_#00ffff] animate-ping" />
+                      <h3 className="text-lg font-display font-bold uppercase tracking-widest">Command Center</h3>
+                    </div>
+                    
+                    <ActionPanel 
+                      onTransfer={() => setIsTransferModalOpen(true)} 
+                      onReverse={handleReverse}
+                    />
+
+                    <div className="mt-12 p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <TrendingUp className="w-4 h-4 text-cyan-400" />
+                        <span className="text-[10px] font-bold tracking-widest opacity-60 uppercase">System Insights</span>
                       </div>
+                      <p className="text-xs leading-relaxed text-white/40 font-medium leading-loose italic">
+                        "True power isn't about the balance in your account, it's about the suit you're wearing while you check it."
+                      </p>
                     </div>
                   </GlassCard>
-                </motion.div>
+                </div>
               </div>
-
-              <motion.div variants={itemVariants}>
-                <TransactionHistory transactions={transactions} />
-              </motion.div>
-            </div>
-
-            {/* Command Center Column */}
-            <motion.div variants={itemVariants} className="main-card h-full">
-              <GlassCard className="h-full border-white/5 bg-white/[0.02]">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_10px_#00ffff] animate-ping" />
-                  <h3 className="text-lg font-display font-bold uppercase tracking-widest">Command Center</h3>
-                </div>
-                
-                <ActionPanel 
-                  onTransfer={() => setIsTransferModalOpen(true)} 
-                  onReverse={handleReverse}
-                />
-
-                <div className="mt-12 p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
-                  <div className="flex items-center gap-3 mb-3">
-                    <TrendingUp className="w-4 h-4 text-cyan-400" />
-                    <span className="text-[10px] font-bold tracking-widest opacity-60 uppercase">System Insights</span>
-                  </div>
-                  <p className="text-xs leading-relaxed text-white/40 font-medium leading-loose italic">
-                    "True power isn't about the balance in your account, it's about the suit you're wearing while you check it."
-                  </p>
-                </div>
-              </GlassCard>
             </motion.div>
-          </div>
-        </motion.div>
+          ) : (
+            <motion.div
+              key="void-view"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-[60vh] flex flex-col items-center justify-center text-center"
+            >
+              <h2 className="text-4xl font-display font-black tracking-[0.5em] text-white/20 uppercase">Protocol: VOID</h2>
+              <p className="text-xs tracking-[0.3em] text-white/10 mt-4 uppercase">System core exposure active. Enjoy the silence.</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       <TransferModal 

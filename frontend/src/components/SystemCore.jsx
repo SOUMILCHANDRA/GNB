@@ -25,30 +25,30 @@ function Orb({ isReversing }) {
   });
 
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[1, 64, 64]}>
+    <Float speed={3} rotationIntensity={2} floatIntensity={3}>
+      <Sphere ref={meshRef} args={[1.5, 64, 64]}>
         <MeshDistortMaterial
           ref={materialRef}
           color={isReversing ? "#ff007a" : "#00e5ff"}
-          speed={3}
-          distort={0.4}
-          radius={1}
+          speed={4}
+          distort={0.5}
+          radius={1.5}
           emissive={isReversing ? "#ff007a" : "#00e5ff"}
-          emissiveIntensity={isReversing ? 5 : 2}
+          emissiveIntensity={isReversing ? 10 : 4}
           transparent
-          opacity={0.6}
+          opacity={0.4}
           wireframe
         />
       </Sphere>
       
       {/* Inner Glow Core */}
-      <Sphere args={[0.6, 32, 32]}>
+      <Sphere args={[0.8, 32, 32]}>
         <meshStandardMaterial
           color="#00e5ff"
           emissive="#00e5ff"
-          emissiveIntensity={5}
+          emissiveIntensity={8}
           transparent
-          opacity={0.8}
+          opacity={0.9}
         />
       </Sphere>
     </Float>

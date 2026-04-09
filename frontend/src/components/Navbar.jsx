@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Shield, LayoutDashboard, Send, History, User } from "lucide-react";
+import { Shield, LayoutDashboard, Send, History, User, Eye } from "lucide-react";
 import { cn } from "../lib/utils";
 
 const Navbar = ({ activeTab, setActiveTab }) => {
@@ -8,6 +8,7 @@ const Navbar = ({ activeTab, setActiveTab }) => {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "transfer", label: "Transfer", icon: Send },
     { id: "history", label: "History", icon: History },
+    { id: "void", label: "VOID", icon: Eye },
   ];
 
   return (

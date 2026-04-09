@@ -11,7 +11,10 @@ const TransactionHistory = ({ transactions }) => {
         <button className="text-xs text-primary hover:underline font-medium tracking-widest uppercase">View All Ledger</button>
       </div>
       
-      <div className="space-y-3 h-[450px] overflow-y-auto pr-2 custom-scrollbar">
+      <div 
+        data-lenis-prevent
+        className="space-y-3 h-[450px] overflow-y-auto pr-2 custom-scrollbar"
+      >
         {transactions.map((tx, index) => (
           <motion.div
             key={tx.id}
