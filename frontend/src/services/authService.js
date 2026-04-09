@@ -39,6 +39,29 @@ export const authService = {
     return data.user;
   },
 
+  async loginAnonymously() {
+    const { data, error } = await supabase.auth.signInAnonymously();
+    if (error) throw error;
+
+    // Check if profile exists, if not create default
+    const { data: profile } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', data.user.id)
+      .single();
+
+    if (!profile) {
+      await supabase.from('users').insert([{
+        id: data.user.id,
+        name: 'ANON_AGENT',
+        email: 'anon@gnb.com',
+        balance: 1000.00
+      }]);
+    }
+
+    return data.user;
+  },
+
   async signOut() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;

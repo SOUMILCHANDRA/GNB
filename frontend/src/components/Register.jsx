@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { authService } from "../services/authService";
 import ParticleBg from "./ParticleBg";
-import { UserPlus, ShieldCheck } from "lucide-react";
+import { UserPlus, ShieldCheck, Ghost } from "lucide-react";
 
 export default function Register({ onRegister }) {
   const [isLogin, setIsLogin] = useState(false);
@@ -14,21 +14,31 @@ export default function Register({ onRegister }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim() || (!isLogin && !name.trim())) return;
-    
+    if (email.trim() && password.trim()) {
+      setLoading(true);
+      setError("");
+      try {
+        if (isLogin) {
+          await authService.login(email, password);
+        } else {
+          const user = await authService.signUp(email, password, name.trim());
+          onRegister(user);
+        }
+      } catch (err) {
+        setError(err.message === "Email rate limit exceeded" ? "SECURITY LOCKOUT: Wait 60s or Use Ghost Mode" : err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleAnonymousLogin = async () => {
     setLoading(true);
     setError("");
-
     try {
-      if (isLogin) {
-        await authService.login(email, password);
-        // App.jsx will catch the session change and redirect
-      } else {
-        const user = await authService.signUp(email, password, name.trim());
-        onRegister(user);
-      }
+      await authService.loginAnonymously();
     } catch (err) {
-      setError(err.message === "Email rate limit exceeded" ? "SECURITY LOCKOUT: Wait 60s" : err.message);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -106,15 +116,29 @@ export default function Register({ onRegister }) {
             <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider text-center bg-red-500/10 py-2 rounded-lg border border-red-500/20">{error}</p>
           )}
 
-          <motion.button
-            whileHover={!loading ? { scale: 1.02, boxShadow: "0 0 30px rgba(0,229,255,0.3)" } : {}}
-            whileTap={!loading ? { scale: 0.98 } : {}}
-            type="submit"
-            disabled={loading}
-            className="w-full py-5 bg-cyan-500 text-black font-black tracking-widest rounded-2xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-wait uppercase"
-          >
-            {loading ? "Processing..." : (isLogin ? "Authenticate" : "Establish Clearance")}
-          </motion.button>
+          <div className="pt-4 space-y-4">
+            <motion.button
+              whileHover={!loading ? { scale: 1.02, boxShadow: "0 0 30px rgba(0,229,255,0.3)" } : {}}
+              whileTap={!loading ? { scale: 0.98 } : {}}
+              type="submit"
+              disabled={loading}
+              className="w-full py-5 bg-cyan-500 text-black font-black tracking-widest rounded-2xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-wait uppercase"
+            >
+              {loading ? "Processing..." : (isLogin ? "Authenticate" : "Establish Clearance")}
+            </motion.button>
+
+            <motion.button
+              whileHover={!loading ? { scale: 1.02, backgroundColor: "rgba(255,255,255,0.1)" } : {}}
+              whileTap={!loading ? { scale: 0.98 } : {}}
+              type="button"
+              onClick={handleAnonymousLogin}
+              disabled={loading}
+              className="w-full py-4 border border-white/10 text-white/60 font-bold tracking-widest rounded-2xl transition-all flex items-center justify-center gap-2 uppercase text-xs"
+            >
+              <Ghost className="w-4 h-4" />
+              Ghost Access (Skip Email)
+            </motion.button>
+          </div>
         </form>
 
         <button 
