@@ -5,6 +5,7 @@ import ParticleBg from "./ParticleBg";
 import { UserPlus, ShieldCheck } from "lucide-react";
 
 export default function Register({ onRegister }) {
+  const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -13,16 +14,21 @@ export default function Register({ onRegister }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !password.trim()) return;
+    if (!email.trim() || !password.trim() || (!isLogin && !name.trim())) return;
     
     setLoading(true);
     setError("");
 
     try {
-      const user = await authService.signUp(email, password, name.trim());
-      onRegister(user);
+      if (isLogin) {
+        await authService.login(email, password);
+        // App.jsx will catch the session change and redirect
+      } else {
+        const user = await authService.signUp(email, password, name.trim());
+        onRegister(user);
+      }
     } catch (err) {
-      setError(err.message);
+      setError(err.message === "Email rate limit exceeded" ? "SECURITY LOCKOUT: Wait 60s" : err.message);
     } finally {
       setLoading(false);
     }
@@ -40,24 +46,37 @@ export default function Register({ onRegister }) {
       >
         <div className="flex justify-center mb-8">
           <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-500 shadow-[0_0_20px_rgba(0,229,255,0.2)]">
-            <UserPlus className="w-8 h-8" />
+            {isLogin ? <ShieldCheck className="w-8 h-8" /> : <UserPlus className="w-8 h-8" />}
           </div>
         </div>
 
-        <h1 className="text-3xl font-display font-black text-center tracking-tight mb-2 uppercase">Identify Yourself</h1>
-        <p className="text-white/40 text-center text-sm font-medium tracking-widest uppercase mb-10">GNB Security Clearance Required</p>
+        <h1 className="text-3xl font-display font-black text-center tracking-tight mb-2 uppercase">
+          {isLogin ? "Verify Identity" : "Identify Yourself"}
+        </h1>
+        <p className="text-white/40 text-center text-sm font-medium tracking-widest uppercase mb-10">
+          {isLogin ? "Protocol: SESSION_RESTORE" : "GNB Security Clearance Required"}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-cyan-400 tracking-[0.2em] uppercase ml-1">Alias / Name</label>
-            <input
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all text-lg font-bold placeholder:text-white/10"
-              placeholder="Your legend's name"
-            />
-          </div>
+          <AnimatePresence mode="wait">
+            {!isLogin && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-2 overflow-hidden"
+              >
+                <label className="text-[10px] font-black text-cyan-400 tracking-[0.2em] uppercase ml-1">Alias / Name</label>
+                <input
+                  required={!isLogin}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all text-lg font-bold placeholder:text-white/10"
+                  placeholder="Your legend's name"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div className="space-y-2">
             <label className="text-[10px] font-black text-cyan-400 tracking-[0.2em] uppercase ml-1">Email Address</label>
@@ -84,7 +103,7 @@ export default function Register({ onRegister }) {
           </div>
 
           {error && (
-            <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider text-center">{error}</p>
+            <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider text-center bg-red-500/10 py-2 rounded-lg border border-red-500/20">{error}</p>
           )}
 
           <motion.button
@@ -92,11 +111,18 @@ export default function Register({ onRegister }) {
             whileTap={!loading ? { scale: 0.98 } : {}}
             type="submit"
             disabled={loading}
-            className="w-full py-5 bg-cyan-500 text-black font-black tracking-widest rounded-2xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-wait"
+            className="w-full py-5 bg-cyan-500 text-black font-black tracking-widest rounded-2xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-wait uppercase"
           >
-            {loading ? "ESTABLISHING CLEARANCE..." : "ESTABLISH CLEARANCE"}
+            {loading ? "Processing..." : (isLogin ? "Authenticate" : "Establish Clearance")}
           </motion.button>
         </form>
+
+        <button 
+          onClick={() => setIsLogin(!isLogin)}
+          className="w-full mt-6 text-[10px] font-bold tracking-widest uppercase text-white/40 hover:text-cyan-400 transition-colors"
+        >
+          {isLogin ? "Need a new identity? Sign Up" : "Already a legend? Log In"}
+        </button>
 
         <div className="mt-8 pt-8 border-t border-white/5 flex items-center justify-center gap-3 opacity-40">
           <ShieldCheck className="w-4 h-4" />
