@@ -3,24 +3,34 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sphere, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
-function Orb({ isReversing }) {
+function Orb({ isReversing, balance }) {
   const meshRef = useRef();
   const materialRef = useRef();
 
+  // Normalize balance for visual mapping (0 to 1M range)
+  const balanceFactor = Math.min(Math.max(balance / 1000000, 0), 1);
+
   useFrame((state) => {
     const { clock } = state;
+    const speed = (isReversing ? -0.8 : 0.2) * (1 + balanceFactor * 2);
+    
     if (meshRef.current) {
-      meshRef.current.rotation.x = clock.getElapsedTime() * (isReversing ? -0.8 : 0.2);
-      meshRef.current.rotation.y = clock.getElapsedTime() * (isReversing ? -1.2 : 0.3);
+      meshRef.current.rotation.x = clock.getElapsedTime() * speed;
+      meshRef.current.rotation.y = clock.getElapsedTime() * speed * 1.5;
     }
     
     if (materialRef.current) {
       materialRef.current.distort = THREE.MathUtils.lerp(
         materialRef.current.distort,
-        isReversing ? 0.8 : 0.4,
+        isReversing ? 0.8 : 0.2 + balanceFactor * 0.4,
         0.05
       );
-      materialRef.current.speed = isReversing ? 10 : 3;
+      materialRef.current.speed = isReversing ? 10 : 3 * (1 + balanceFactor);
+      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
+        materialRef.current.emissiveIntensity,
+        (isReversing ? 12 : 2 + balanceFactor * 6),
+        0.05
+      );
     }
   });
 
@@ -34,9 +44,9 @@ function Orb({ isReversing }) {
           distort={0.5}
           radius={1.5}
           emissive={isReversing ? "#ff007a" : "#00e5ff"}
-          emissiveIntensity={isReversing ? 10 : 4}
+          emissiveIntensity={4}
           transparent
-          opacity={0.4}
+          opacity={0.3}
           wireframe
         />
       </Sphere>
@@ -44,9 +54,9 @@ function Orb({ isReversing }) {
       {/* Inner Glow Core */}
       <Sphere args={[0.8, 32, 32]}>
         <meshStandardMaterial
-          color="#00e5ff"
-          emissive="#00e5ff"
-          emissiveIntensity={8}
+          color={isReversing ? "#ff007a" : "#00e5ff"}
+          emissive={isReversing ? "#ff007a" : "#00e5ff"}
+          emissiveIntensity={10 * (1 + balanceFactor)}
           transparent
           opacity={0.9}
         />
@@ -96,7 +106,7 @@ function ParticleField({ count = 200 }) {
   );
 }
 
-export default function SystemCore({ isReversing }) {
+export default function SystemCore({ isReversing, balance }) {
   return (
     <div className="fixed inset-0 z-[-10] pointer-events-none opacity-100">
       <Canvas style={{ height: '100%', width: '100%' }}>
@@ -105,7 +115,7 @@ export default function SystemCore({ isReversing }) {
         <pointLight position={[10, 10, 10]} intensity={2} color={isReversing ? "#ff007a" : "#00e5ff"} />
         <pointLight position={[-10, -10, -10]} intensity={1} color="#7000ff" />
         
-        <Orb isReversing={isReversing} />
+        <Orb isReversing={isReversing} balance={balance} />
         <ParticleField count={400} />
         <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
         

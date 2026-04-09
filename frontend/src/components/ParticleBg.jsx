@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
-export default function ParticleBg() {
+export default function ParticleBg({ balance = 0 }) {
   const [init, setInit] = useState(false);
 
   useEffect(() => {
@@ -12,6 +12,9 @@ export default function ParticleBg() {
       setInit(true);
     });
   }, []);
+
+  const balanceFactor = Math.min(Math.max(balance / 1000000, 0), 1);
+  const isLowBalance = balance < 1000;
 
   const options = useMemo(
     () => ({
@@ -27,12 +30,12 @@ export default function ParticleBg() {
         },
       },
       particles: {
-        color: { value: "#00ffff" },
+        color: { value: isLowBalance ? "#ff007a" : "#00ffff" },
         links: {
-          color: "#00ffff",
+          color: isLowBalance ? "#ff007a" : "#00ffff",
           distance: 150,
           enable: true,
-          opacity: 0.2,
+          opacity: 0.2 + (balanceFactor * 0.3),
           width: 1,
         },
         move: {
@@ -40,20 +43,20 @@ export default function ParticleBg() {
           enable: true,
           outModes: { default: "bounce" },
           random: false,
-          speed: 1,
+          speed: 1 + (balanceFactor * 4),
           straight: false,
         },
         number: {
           density: { enable: true },
-          value: 80,
+          value: 40 + (balanceFactor * 80),
         },
-        opacity: { value: 0.3 },
+        opacity: { value: 0.3 + (balanceFactor * 0.2) },
         shape: { type: "circle" },
-        size: { value: { min: 1, max: 3 } },
+        size: { value: { min: 1, max: 2 + (balanceFactor * 2) } },
       },
       detectRetina: true,
     }),
-    []
+    [balanceFactor, isLowBalance]
   );
 
   if (init) {

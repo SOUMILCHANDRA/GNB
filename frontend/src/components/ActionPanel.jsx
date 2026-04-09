@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Send, Plus, Minus, Timer, AlertTriangle, ShieldAlert } from "lucide-react";
 
-export default function ActionPanel({ onTransfer, onReverse }) {
+export default function ActionPanel({ onTransfer, onReverse, onDeposit, onWithdraw }) {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isReversible, setIsReversible] = useState(true);
   const totalDuration = 60;
@@ -16,6 +16,16 @@ export default function ActionPanel({ onTransfer, onReverse }) {
     }
   }, [timeLeft]);
 
+  const handleDeposit = () => {
+    const amount = prompt("Enter deposit amount ($):");
+    if (amount && !isNaN(amount)) onDeposit(parseFloat(amount));
+  };
+
+  const handleWithdraw = () => {
+    const amount = prompt("Enter withdrawal amount ($):");
+    if (amount && !isNaN(amount)) onWithdraw(parseFloat(amount));
+  };
+
   const progress = (timeLeft / totalDuration) * 283; // 283 is approx circumference for r=45
 
   return (
@@ -25,6 +35,7 @@ export default function ActionPanel({ onTransfer, onReverse }) {
         <motion.button
           whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.2)" }}
           whileTap={{ scale: 0.98 }}
+          onClick={handleDeposit}
           className="h-24 rounded-2xl border border-white/5 bg-white/[0.03] flex flex-col items-center justify-center gap-2 group transition-colors"
         >
           <Plus className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform" />
@@ -33,6 +44,7 @@ export default function ActionPanel({ onTransfer, onReverse }) {
         <motion.button
           whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.2)" }}
           whileTap={{ scale: 0.98 }}
+          onClick={handleWithdraw}
           className="h-24 rounded-2xl border border-white/5 bg-white/[0.03] flex flex-col items-center justify-center gap-2 group transition-colors"
         >
           <Minus className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform" />

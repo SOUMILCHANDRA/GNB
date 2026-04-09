@@ -22,6 +22,18 @@ To build a world that feels "designed for you," we utilize a heavy-duty architec
 *   **🎿 Lenis**: Implementing smooth, inertia-based scrolling for that premium "space-flight" navigation feel.
 *   **🎨 Framer Motion**: Handling micro-interactions, spring physics, and layout transitions.
 *   **💎 Tailwind CSS**: Custom glassmorphism and depth stacking.
+*   **📡 Supabase**: The engine room. Powering PostgreSQL database, Real-time subscriptions, and Secure Auth.
+
+---
+
+## 🧬 The Full-Stack Engine: Phase 4
+GNB is no longer a simulation. It is a **Live Data Ecosystem**.
+
+*   **Real-time Reactivity**: The **System Core** and **Particles** are now state-aware. Balance changes in PostgreSQL are reflected instantly via Supabase channels, affecting the 3D core's rotation and particle density.
+*   **Secure Clearance (Auth)**: JWT-based authentication ensures only legends can access the vault.
+*   **Relational Logic**: A sophisticated schema managing `Users` and `Transactions` with a signature **Protocol 83** reversal logic.
+
+---
 
 ---
 
@@ -65,6 +77,15 @@ cd GNB/frontend
 
 # Install the high-end dependencies
 npm install
+
+# Setup Environment
+# Create a .env file based on .env.example
+# VITE_SUPABASE_URL=your_url
+# VITE_SUPABASE_ANON_KEY=your_key
+
+# Database Setup (SQL Editor)
+# 1. Run the schema from implementation guide
+# 2. Enable Real-time for 'users' and 'transactions'
 
 # Launch the System
 npm run dev

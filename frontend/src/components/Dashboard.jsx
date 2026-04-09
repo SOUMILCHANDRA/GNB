@@ -1,11 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
 import BalanceCard from "./BalanceCard";
 import TransactionHistory from "./TransactionHistory";
 import ActionPanel from "./ActionPanel";
 import TransferModal from "./TransferModal";
-import { MOCK_USER, MOCK_TRANSACTIONS } from "../data/mock";
+import { bankingService } from "../services/bankingService";
+import { authService } from "../services/authService";
 import GlassCard from "./ui/GlassCard";
 import { TrendingUp, UserCheck, Shield, Activity, Zap, CheckCircle } from "lucide-react";
 import ParticleBg from "./ParticleBg";
@@ -16,54 +17,86 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.3
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  show: { 
-    opacity: 1, 
-    y: 0,
-    transition: { type: "spring", stiffness: 100, damping: 15 }
-  }
-};
-
-export default function Dashboard({ user }) {
+export default function Dashboard({ user: initialUser }) {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
-  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
-  const [balance, setBalance] = useState(user?.balance || MOCK_USER.balance);
+  const [transactions, setTransactions] = useState([]);
+  const [balance, setBalance] = useState(initialUser?.balance || 0);
   const [isReversing, setIsReversing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleTransferComplete = ({ id, amount }) => {
-    const numAmount = parseFloat(amount);
-    const newTx = {
-      id: Date.now(),
-      type: "Transfer",
-      amount: -numAmount,
-      timestamp: new Date().toLocaleString(),
-      note: `Sent to Account ${id}`
+  useEffect(() => {
+    if (!initialUser) return;
+
+    // 1. Fetch initial transactions
+    const fetchHistory = async () => {
+      const { data, error } = await bankingService.supabase
+        .from('transactions')
+        .select('*')
+        .or(`sender_id.eq.${initialUser.id},receiver_id.eq.${initialUser.id}`)
+        .order('created_at', { ascending: false });
+      
+      if (!error) setTransactions(data);
     };
-    setTransactions([newTx, ...transactions]);
-    setBalance(prev => prev - numAmount);
+    fetchHistory();
+
+    // 2. Subscribe to real-time balance updates
+    const balanceSub = bankingService.subscribeToBalance(initialUser.id, (newBalance) => {
+      setBalance(newBalance);
+    });
+
+    // 3. Subscribe to real-time transaction updates
+    const txSub = bankingService.subscribeToTransactions(initialUser.id, (newTx) => {
+      setTransactions(prev => [newTx, ...prev]);
+    });
+
+    return () => {
+      balanceSub.unsubscribe();
+      txSub.unsubscribe();
+    };
+  }, [initialUser]);
+
+  const handleDeposit = async (amount) => {
+    try {
+      await bankingService.deposit(initialUser.id, amount);
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
-  const handleReverse = () => {
+  const handleWithdraw = async (amount) => {
+    try {
+      await bankingService.withdraw(initialUser.id, amount);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleTransferComplete = async ({ id, amount }) => {
+    try {
+      await bankingService.transfer(initialUser.id, id, parseFloat(amount));
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleReverse = async () => {
     if (isReversing) return;
     
     setIsReversing(true);
     
     // GSAP Time Reversal Effect
     const tl = gsap.timeline({
-      onComplete: () => setIsReversing(false)
+      onComplete: async () => {
+        try {
+          await bankingService.reverseLastTransaction(initialUser.id);
+          console.log("PROTOCOL: TIME_REVERSAL_COMPLETE");
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          setIsReversing(false);
+        }
+      }
     });
 
     tl.to("body", { backgroundColor: "#1a000a", duration: 0.2 })
@@ -145,10 +178,11 @@ export default function Dashboard({ user }) {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
       {/* Background Layer 1: 3D System Core */}
-      <SystemCore isReversing={isReversing} />
+      {/* Background Layer 1: 3D System Core */}
+      <SystemCore isReversing={isReversing} balance={balance} />
       
       {/* Background Layer 2: Connecting Particles */}
-      <ParticleBg />
+      <ParticleBg balance={balance} />
       
       {/* Mid Layer: Mesh Gradients */}
       <div className="fixed inset-0 pointer-events-none z-[-5] opacity-20 bg-mesh" />
@@ -211,8 +245,8 @@ export default function Dashboard({ user }) {
                           <UserCheck className="w-8 h-8 text-primary mb-4 transition-transform group-hover:scale-110" />
                           <div>
                             <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Authenticated As</p>
-                            <h3 className="text-xl font-display font-bold text-white">{user?.name || MOCK_USER.name}</h3>
-                            <p className="text-sm text-primary font-medium mt-1">ID: #{MOCK_USER.id}</p>
+                            <h3 className="text-xl font-display font-bold text-white">{initialUser?.name || "BRO"}</h3>
+                            <p className="text-sm text-primary font-medium mt-1">ID: #{initialUser?.id.slice(0,8)}</p>
                           </div>
                         </div>
                       </GlassCard>
@@ -252,6 +286,8 @@ export default function Dashboard({ user }) {
                     <ActionPanel 
                       onTransfer={() => setIsTransferModalOpen(true)} 
                       onReverse={handleReverse}
+                      onDeposit={handleDeposit}
+                      onWithdraw={handleWithdraw}
                     />
 
                     <div className="mt-12 p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">

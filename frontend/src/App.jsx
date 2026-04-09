@@ -7,20 +7,39 @@ import Register from "./components/Register";
 import SmoothScroll from "./components/SmoothScroll";
 import { AnimatePresence } from "framer-motion";
 
+import { authService } from "./services/authService";
+import { bankingService } from "./services/bankingService";
+
 export default function App() {
   const [stage, setStage] = useState("intro"); // "intro", "anim", "dashboard"
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("gnb_user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+    // Listen for auth state changes
+    const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        try {
+          // Fetch full profile (including balance) when logged in
+          const profile = await bankingService.getUserProfile(session.user.id);
+          setUser({ ...session.user, ...profile });
+        } catch (err) {
+          console.error("Failed to fetch profile:", err);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  if (loading) return null;
+  if (loading) return (
+    <div className="bg-black h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   if (!user) {
     return (
