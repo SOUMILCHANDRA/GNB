@@ -4,16 +4,18 @@ import GlassCard from "./ui/GlassCard";
 import { formatCurrency } from "../lib/utils";
 import { Database, TrendingUp, Sparkles } from "lucide-react";
 
-// Custom hook to animate numbers
+// Custom hook to animate numbers smoothly from previous value
 const useCountUp = (target, duration = 2) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(target);
+  const [prevTarget, setPrevTarget] = useState(target);
 
   useEffect(() => {
-    const controls = animate(0, target, {
+    const controls = animate(prevTarget, target, {
       duration: duration,
       ease: "easeOut",
       onUpdate: (value) => setCount(value),
     });
+    setPrevTarget(target);
     return () => controls.stop();
   }, [target, duration]);
 

@@ -3,16 +3,20 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sphere, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
-function Orb({ isReversing, balance }) {
+function Orb({ isReversing, balance, systemStatus }) {
   const meshRef = useRef();
   const materialRef = useRef();
 
   // Normalize balance for visual mapping (0 to 1M range)
   const balanceFactor = Math.min(Math.max(balance / 1000000, 0), 1);
+  const isActive = systemStatus === 'ACTIVE';
+  const isCritical = systemStatus === 'CRITICAL';
 
   useFrame((state) => {
     const { clock } = state;
-    const speed = (isReversing ? -0.8 : 0.2) * (1 + balanceFactor * 2);
+    const baseSpeed = isReversing ? -0.8 : 0.2;
+    const activityMultiplier = isActive ? 3 : 1;
+    const speed = baseSpeed * (1 + balanceFactor * 2) * activityMultiplier;
     
     if (meshRef.current) {
       meshRef.current.rotation.x = clock.getElapsedTime() * speed;
@@ -22,28 +26,30 @@ function Orb({ isReversing, balance }) {
     if (materialRef.current) {
       materialRef.current.distort = THREE.MathUtils.lerp(
         materialRef.current.distort,
-        isReversing ? 0.8 : 0.2 + balanceFactor * 0.4,
+        isReversing || isCritical ? 0.8 : (isActive ? 0.6 : 0.2 + balanceFactor * 0.4),
         0.05
       );
-      materialRef.current.speed = isReversing ? 10 : 3 * (1 + balanceFactor);
+      materialRef.current.speed = (isReversing ? 10 : 3 * (1 + balanceFactor)) * activityMultiplier;
       materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
         materialRef.current.emissiveIntensity,
-        (isReversing ? 12 : 2 + balanceFactor * 6),
+        (isReversing || isCritical ? 12 : 2 + balanceFactor * 6) * activityMultiplier,
         0.05
       );
     }
   });
+
+  const coreColor = isReversing || isCritical ? "#ff007a" : "#00e5ff";
 
   return (
     <Float speed={3} rotationIntensity={2} floatIntensity={3}>
       <Sphere ref={meshRef} args={[1.5, 64, 64]}>
         <MeshDistortMaterial
           ref={materialRef}
-          color={isReversing ? "#ff007a" : "#00e5ff"}
+          color={coreColor}
           speed={4}
           distort={0.5}
           radius={1.5}
-          emissive={isReversing ? "#ff007a" : "#00e5ff"}
+          emissive={coreColor}
           emissiveIntensity={4}
           transparent
           opacity={0.3}
@@ -54,9 +60,9 @@ function Orb({ isReversing, balance }) {
       {/* Inner Glow Core */}
       <Sphere args={[0.8, 32, 32]}>
         <meshStandardMaterial
-          color={isReversing ? "#ff007a" : "#00e5ff"}
-          emissive={isReversing ? "#ff007a" : "#00e5ff"}
-          emissiveIntensity={10 * (1 + balanceFactor)}
+          color={coreColor}
+          emissive={coreColor}
+          emissiveIntensity={10 * (1 + balanceFactor) * (isActive ? 2 : 1)}
           transparent
           opacity={0.9}
         />
@@ -65,7 +71,7 @@ function Orb({ isReversing, balance }) {
   );
 }
 
-function ParticleField({ count = 200 }) {
+function ParticleField({ count = 200, systemStatus }) {
   const points = useMemo(() => {
     const p = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -80,8 +86,9 @@ function ParticleField({ count = 200 }) {
 
   useFrame((state) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += 0.001;
-      pointsRef.current.rotation.x += 0.0005;
+      const rotSpeed = systemStatus === 'ACTIVE' ? 0.005 : 0.001;
+      pointsRef.current.rotation.y += rotSpeed;
+      pointsRef.current.rotation.x += rotSpeed * 0.5;
     }
   });
 
@@ -97,7 +104,7 @@ function ParticleField({ count = 200 }) {
       </bufferGeometry>
       <pointsMaterial
         size={0.02}
-        color="#00e5ff"
+        color={systemStatus === 'CRITICAL' ? "#ff007a" : "#00e5ff"}
         transparent
         opacity={0.5}
         sizeAttenuation
@@ -106,17 +113,17 @@ function ParticleField({ count = 200 }) {
   );
 }
 
-export default function SystemCore({ isReversing, balance }) {
+export default function SystemCore({ isReversing, balance, systemStatus }) {
   return (
     <div className="fixed inset-0 z-[-10] pointer-events-none opacity-100">
       <Canvas style={{ height: '100%', width: '100%' }}>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={2} color={isReversing ? "#ff007a" : "#00e5ff"} />
+        <pointLight position={[10, 10, 10]} intensity={2} color={isReversing || systemStatus === 'CRITICAL' ? "#ff007a" : "#00e5ff"} />
         <pointLight position={[-10, -10, -10]} intensity={1} color="#7000ff" />
         
-        <Orb isReversing={isReversing} balance={balance} />
-        <ParticleField count={400} />
+        <Orb isReversing={isReversing} balance={balance} systemStatus={systemStatus} />
+        <ParticleField count={400} systemStatus={systemStatus} />
         <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
         
         {/* Post-processing-like glow */}

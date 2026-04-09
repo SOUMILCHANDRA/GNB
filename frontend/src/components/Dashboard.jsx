@@ -6,7 +6,8 @@ import TransactionHistory from "./TransactionHistory";
 import ActionPanel from "./ActionPanel";
 import TransferModal from "./TransferModal";
 import { bankingService } from "../services/bankingService";
-import { authService } from "../services/authService";
+import { useBankingStore } from "../store/useBankingStore";
+import { useRealtime } from "../hooks/useRealtime";
 import GlassCard from "./ui/GlassCard";
 import { TrendingUp, UserCheck, Shield, Activity, Zap, CheckCircle } from "lucide-react";
 import ParticleBg from "./ParticleBg";
@@ -17,48 +18,26 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export default function Dashboard({ user: initialUser }) {
+export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
-  const [transactions, setTransactions] = useState([]);
-  const [balance, setBalance] = useState(initialUser?.balance || 0);
-  const [isReversing, setIsReversing] = useState(false);
-  const [loading, setLoading] = useState(false);
+  
+  // System State from Store
+  const { 
+    user, 
+    balance, 
+    transactions, 
+    isReversing, 
+    setIsReversing,
+    systemStatus 
+  } = useBankingStore();
 
-  useEffect(() => {
-    if (!initialUser) return;
-
-    // 1. Fetch initial transactions
-    const fetchHistory = async () => {
-      const { data, error } = await bankingService.supabase
-        .from('transactions')
-        .select('*')
-        .or(`sender_id.eq.${initialUser.id},receiver_id.eq.${initialUser.id}`)
-        .order('created_at', { ascending: false });
-      
-      if (!error) setTransactions(data);
-    };
-    fetchHistory();
-
-    // 2. Subscribe to real-time balance updates
-    const balanceSub = bankingService.subscribeToBalance(initialUser.id, (newBalance) => {
-      setBalance(newBalance);
-    });
-
-    // 3. Subscribe to real-time transaction updates
-    const txSub = bankingService.subscribeToTransactions(initialUser.id, (newTx) => {
-      setTransactions(prev => [newTx, ...prev]);
-    });
-
-    return () => {
-      balanceSub.unsubscribe();
-      txSub.unsubscribe();
-    };
-  }, [initialUser]);
+  // Initialize Real-time synchronization
+  useRealtime(user?.id);
 
   const handleDeposit = async (amount) => {
     try {
-      await bankingService.deposit(initialUser.id, amount);
+      await bankingService.deposit(user.id, amount);
     } catch (err) {
       alert(err.message);
     }
@@ -66,7 +45,7 @@ export default function Dashboard({ user: initialUser }) {
 
   const handleWithdraw = async (amount) => {
     try {
-      await bankingService.withdraw(initialUser.id, amount);
+      await bankingService.withdraw(user.id, amount);
     } catch (err) {
       alert(err.message);
     }
@@ -74,7 +53,7 @@ export default function Dashboard({ user: initialUser }) {
 
   const handleTransferComplete = async ({ id, amount }) => {
     try {
-      await bankingService.transfer(initialUser.id, id, parseFloat(amount));
+      await bankingService.transfer(user.id, id, parseFloat(amount));
     } catch (err) {
       alert(err.message);
     }
@@ -85,12 +64,10 @@ export default function Dashboard({ user: initialUser }) {
     
     setIsReversing(true);
     
-    // GSAP Time Reversal Effect
     const tl = gsap.timeline({
       onComplete: async () => {
         try {
-          await bankingService.reverseLastTransaction(initialUser.id);
-          console.log("PROTOCOL: TIME_REVERSAL_COMPLETE");
+          await bankingService.reverseLastTransaction(user.id);
         } catch (err) {
           alert(err.message);
         } finally {
@@ -116,8 +93,6 @@ export default function Dashboard({ user: initialUser }) {
         yoyo: true 
       }, 0)
       .to("body", { backgroundColor: "#000000", duration: 0.5 });
-      
-    console.log("PROTOCOL: TIME_REVERSAL_INITIATED");
   };
 
   useGSAP(() => {
@@ -179,10 +154,10 @@ export default function Dashboard({ user: initialUser }) {
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
       {/* Background Layer 1: 3D System Core */}
       {/* Background Layer 1: 3D System Core */}
-      <SystemCore isReversing={isReversing} balance={balance} />
+      <SystemCore isReversing={isReversing} balance={balance} systemStatus={systemStatus} />
       
       {/* Background Layer 2: Connecting Particles */}
-      <ParticleBg balance={balance} />
+      <ParticleBg balance={balance} systemStatus={systemStatus} />
       
       {/* Mid Layer: Mesh Gradients */}
       <div className="fixed inset-0 pointer-events-none z-[-5] opacity-20 bg-mesh" />
@@ -205,7 +180,9 @@ export default function Dashboard({ user: initialUser }) {
                   <Activity className="hud-flicker w-4 h-4 text-cyan-500" />
                   <div>
                     <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider">System Status</p>
-                    <p className="text-xs font-mono font-bold text-cyan-400">ACTIVE</p>
+                    <p className={`text-xs font-mono font-bold ${systemStatus === 'CRITICAL' ? 'text-red-500 animate-pulse' : 'text-cyan-400'}`}>
+                      {systemStatus}
+                    </p>
                   </div>
                 </div>
                 <div className="telemetry-card p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
@@ -245,8 +222,8 @@ export default function Dashboard({ user: initialUser }) {
                           <UserCheck className="w-8 h-8 text-primary mb-4 transition-transform group-hover:scale-110" />
                           <div>
                             <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Authenticated As</p>
-                            <h3 className="text-xl font-display font-bold text-white">{initialUser?.name || "BRO"}</h3>
-                            <p className="text-sm text-primary font-medium mt-1">ID: #{initialUser?.id.slice(0,8)}</p>
+                            <h3 className="text-xl font-display font-bold text-white">{user?.name || "BRO"}</h3>
+                            <p className="text-sm text-primary font-medium mt-1">ID: #{user?.id?.slice(0,8)}</p>
                           </div>
                         </div>
                       </GlassCard>

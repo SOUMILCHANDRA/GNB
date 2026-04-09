@@ -9,10 +9,11 @@ import { AnimatePresence } from "framer-motion";
 
 import { authService } from "./services/authService";
 import { bankingService } from "./services/bankingService";
+import { useBankingStore } from "./store/useBankingStore";
 
 export default function App() {
   const [stage, setStage] = useState("intro"); // "intro", "anim", "dashboard"
-  const [user, setUser] = useState(null);
+  const { user, setUser, clearStore } = useBankingStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,20 +21,20 @@ export default function App() {
     const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         try {
-          // Fetch full profile (including balance) when logged in
+          // Fetch full profile when logged in
           const profile = await bankingService.getUserProfile(session.user.id);
           setUser({ ...session.user, ...profile });
         } catch (err) {
           console.error("Failed to fetch profile:", err);
         }
       } else {
-        setUser(null);
+        clearStore();
       }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setUser, clearStore]);
 
   if (loading) return (
     <div className="bg-black h-screen flex items-center justify-center">
