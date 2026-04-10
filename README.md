@@ -1,15 +1,16 @@
 # 👔 Goliath National Bank (GNB)
 
-> **"Your Financial Wingman."**  
-> *Banking is a digital universe. Suit up.*
+🔗 **Live Demo**: [https://frontend-five-kohl-95.vercel.app](https://frontend-five-kohl-95.vercel.app)  📦 **GitHub**: [https://github.com/SOUMILCHANDRA/GNB](https://github.com/SOUMILCHANDRA/GNB)
+
+![Frontend](https://img.shields.io/badge/FRONTEND-REACT-0088cc?style=for-the-badge&logo=react&logoColor=white) 
+![Backend](https://img.shields.io/badge/BACKEND-SUPABASE-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) 
+![Deployed](https://img.shields.io/badge/DEPLOYED-VERCEL-000000?style=for-the-badge&logo=vercel&logoColor=white) 
+![Status](https://img.shields.io/badge/STATUS-PRODUCTION-22c55e?style=for-the-badge)
+
+> A high-performance, cinematic banking system designed for immersive financial management with real-time 3D telemetry and encrypted data protocols.
 
 ---
 
-## 🌐 Live System Entry
-**Production Interface**: [https://frontend-five-kohl-95.vercel.app](https://frontend-five-kohl-95.vercel.app)  
-*Status: ACTIVE | Encryption: Verified*
-
----
 
 
 ## 🕶️ The Evolution: System Experience Architecture
