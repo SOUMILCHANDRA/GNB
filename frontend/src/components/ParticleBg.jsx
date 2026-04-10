@@ -64,9 +64,10 @@ export default function ParticleBg({ balance = 0, interactive = false }) {
       <Particles
         id="tsparticles"
         options={options}
-        className={`absolute inset-0 z-0 transition-all duration-1000 ${interactive ? 'pointer-events-auto cursor-crosshair' : 'pointer-events-none'}`}
+        className={`fixed inset-0 transition-all duration-1000 ${interactive ? 'pointer-events-auto cursor-crosshair' : 'pointer-events-none'}`}
       />
     );
+
   }
 
   return null;

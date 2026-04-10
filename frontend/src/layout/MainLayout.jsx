@@ -62,22 +62,32 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
       {/* Background Layer 1: 3D System Core */}
-      <SystemCore 
-        isReversing={isReversing} 
-        balance={balance} 
-        systemStatus={systemStatus} 
-        interactive={isVoidMode} 
-      />
+      <div className={cn(
+        "fixed inset-0 transition-all duration-1000",
+        isVoidMode ? "z-20" : "z-[1]"
+      )}>
+        <SystemCore 
+          isReversing={isReversing} 
+          balance={balance} 
+          systemStatus={systemStatus} 
+          interactive={isVoidMode} 
+        />
+      </div>
       
       {/* Background Layer 2: Connecting Particles */}
-      <ParticleBg 
-        balance={balance} 
-        systemStatus={systemStatus} 
-        interactive={isVoidMode} 
-      />
+      <div className={cn(
+        "fixed inset-0 transition-all duration-1000",
+        isVoidMode ? "z-10" : "z-[2]"
+      )}>
+        <ParticleBg 
+          balance={balance} 
+          systemStatus={systemStatus} 
+          interactive={isVoidMode} 
+        />
+      </div>
       
       {/* Mid Layer: Mesh Gradients */}
-      <div className="fixed inset-0 pointer-events-none z-[-5] opacity-20 bg-mesh" />
+      <div className="fixed inset-0 pointer-events-none z-[3] opacity-20 bg-mesh" />
 
       {/* Persistent Global Interface Elements */}
       <CursorGlow />
@@ -85,8 +95,8 @@ export default function MainLayout() {
 
       {/* Main Content Area */}
       <main className={cn(
-        "container mx-auto px-6 pb-20 pt-28 relative z-10",
-        isVoidMode && "pointer-events-none"
+        "container mx-auto px-6 pb-20 pt-28 relative transition-all duration-1000",
+        isVoidMode ? "z-30 pointer-events-none" : "z-40"
       )}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -106,7 +116,7 @@ export default function MainLayout() {
       </AnimatePresence>
 
       {/* Decorative text at bottom */}
-      <div className="fixed bottom-6 w-full text-center pointer-events-none opacity-10">
+      <div className="fixed bottom-6 w-full text-center pointer-events-none opacity-10 z-[50]">
         <p className="text-[10px] tracking-[1em] uppercase font-bold text-white">
           GNB LEGENDARY INTERFACE v2.0 // SYSTEM STATUS: {systemStatus}
         </p>
@@ -114,5 +124,7 @@ export default function MainLayout() {
     </div>
   );
 }
+
+
 
 

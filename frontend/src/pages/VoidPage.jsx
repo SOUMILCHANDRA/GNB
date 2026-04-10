@@ -6,7 +6,8 @@ export default function VoidPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="h-[80vh] w-full flex flex-col items-center justify-center relative cursor-none">
+    <div className="h-[80vh] w-full flex flex-col items-center justify-center relative">
+
        {/* Floating System Fragments */}
        <div className="absolute inset-0 pointer-events-none">
           {[1,2,3,4].map(i => (

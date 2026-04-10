@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Shield, LayoutDashboard, Send, History, CircleUser, Terminal } from "lucide-react";
+import { Shield, LayoutDashboard, Send, History, CircleUser, Terminal, Eye } from "lucide-react";
+
 import { cn } from "../lib/utils";
 import { NavLink, useNavigate } from "react-router-dom";
 

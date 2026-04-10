@@ -7,15 +7,16 @@ export default function SuitUpAnimation({ onComplete, user }) {
 
   useEffect(() => {
     const sequence = [
-      () => setStage(1), // Pulse
-      () => setStage(2), // System Initialization
-      () => setStage(3), // Access Granted / Barney Quote
-      () => setStage(4), // Flash
-      () => onComplete()
+      () => setStage(1), // Pulse (0s)
+      () => setStage(2), // System Initialization (1.5s)
+      () => setStage(3), // Access Granted / Barney Quote (3.5s)
+      () => setStage(4), // Flash (7.5s)
+      () => onComplete() // (8.5s)
     ];
 
+    const deltas = [0, 1500, 3500, 7500, 8500];
     const timers = sequence.map((fn, i) => {
-      return setTimeout(fn, i * 1000); // 1s per stage for narrative weight
+      return setTimeout(fn, deltas[i]);
     });
 
     return () => timers.forEach(clearTimeout);
@@ -59,7 +60,7 @@ export default function SuitUpAnimation({ onComplete, user }) {
                <motion.div 
                  initial={{ x: "-100%" }}
                  animate={{ x: "0%" }}
-                 transition={{ duration: 1 }}
+                 transition={{ duration: 2 }}
                  className="w-full h-full bg-cyan-500 shadow-[0_0_10px_#00ffff]"
                />
             </div>
@@ -95,11 +96,24 @@ export default function SuitUpAnimation({ onComplete, user }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="space-y-4"
+              className="space-y-6"
             >
-              <p className="text-cyan-400 font-display italic text-xl">"Barney trusts you."</p>
+              <div className="space-y-2">
+                 <p className="text-cyan-400 font-display italic text-xl">"Barney trusts you."</p>
+                 <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    transition={{ delay: 1.5 }}
+                    className="p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/20"
+                 >
+                    <p className="text-[10px] font-mono text-cyan-400/80 uppercase tracking-widest leading-relaxed">
+                       <span className="text-cyan-400 font-bold">New Recruit Note:</span><br />
+                       Verification Protocol Active. Please check your transmission queue (Email) to confirm your identity before proceeding to elite banking modules.
+                    </p>
+                 </motion.div>
+              </div>
               
-              <div className="flex justify-center gap-6 text-[9px] font-bold tracking-[0.3em] text-white/40 uppercase">
+              <div className="flex justify-center gap-6 text-[9px] font-bold tracking-[0.3em] text-white/40 uppercase pt-4">
                 <div className="flex flex-col items-center">
                   <span className="text-white">100%</span>
                   <span>Suit Integrity</span>
@@ -112,6 +126,7 @@ export default function SuitUpAnimation({ onComplete, user }) {
             </motion.div>
           </motion.div>
         )}
+
       </div>
 
       {/* Scan Line Effect */}
