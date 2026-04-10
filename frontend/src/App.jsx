@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import IntroScreen from "./components/IntroScreen";
 import SuitUpAnimation from "./components/SuitUpAnimation";
-import Dashboard from "./components/Dashboard";
 import CursorGlow from "./components/CursorGlow";
 import Register from "./components/Register";
 import SmoothScroll from "./components/SmoothScroll";
 import { AnimatePresence } from "framer-motion";
+
+import MainLayout from "./layout/MainLayout";
+import DashboardPage from "./pages/DashboardPage";
+import TransferPage from "./pages/TransferPage";
+import TransactionsPage from "./pages/TransactionsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 import { authService } from "./services/authService";
 import { bankingService } from "./services/bankingService";
@@ -21,7 +27,6 @@ export default function App() {
     const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         try {
-          // Fetch full profile when logged in
           const profile = await bankingService.getUserProfile(session.user.id);
           setUser({ ...session.user, ...profile });
         } catch (err) {
@@ -55,7 +60,7 @@ export default function App() {
     <SmoothScroll>
       <div className="min-h-screen text-white relative">
         <div className="fixed inset-0 bg-black z-[-20]" />
-        <CursorGlow />
+        
         <AnimatePresence mode="wait">
           {stage === "intro" && (
             <IntroScreen 
@@ -74,10 +79,19 @@ export default function App() {
           )}
           
           {stage === "dashboard" && (
-            <Dashboard key="dashboard" user={user} />
+            <Routes key="dashboard">
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/transfer" element={<TransferPage />} />
+                <Route path="/transactions" element={<TransactionsPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
+            </Routes>
           )}
         </AnimatePresence>
       </div>
     </SmoothScroll>
   );
 }
+
