@@ -5,6 +5,13 @@
 
 ---
 
+## 🌐 Live System Entry
+**Production Interface**: [https://frontend-five-kohl-95.vercel.app](https://frontend-five-kohl-95.vercel.app)  
+*Status: ACTIVE | Encryption: Verified*
+
+---
+
+
 ## 🕶️ The Evolution: System Experience Architecture
 
 Welcome to the new era of **Goliath National Bank (GNB)**. Moving beyond standard financial dashboards, GNB is now an **Immersive System Interface** — a high-performance, cinematic banking universe built with the exact stack used by elite design agencies.
