@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, ShieldForward, User, DollarSign, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Send, ShieldCheck, User, DollarSign, ArrowRight, CheckCircle2 } from "lucide-react";
 import GlassCard from "../components/ui/GlassCard";
 import { useBankingStore } from "../store/useBankingStore";
 import { bankingService } from "../services/bankingService";
@@ -102,7 +102,7 @@ export default function TransferPage() {
 
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <ShieldForward className="w-5 h-5 text-secondary" />
+                    <ShieldCheck className="w-5 h-5 text-secondary" />
                     <div>
                       <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Network Fee</p>
                       <p className="text-sm font-mono text-secondary">0.00 GNB</p>

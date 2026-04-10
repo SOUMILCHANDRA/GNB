@@ -12,6 +12,7 @@ import DashboardPage from "./pages/DashboardPage";
 import TransferPage from "./pages/TransferPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import ProfilePage from "./pages/ProfilePage";
+import VoidPage from "./pages/VoidPage";
 
 import { authService } from "./services/authService";
 import { bankingService } from "./services/bankingService";
@@ -50,7 +51,6 @@ export default function App() {
   if (!user) {
     return (
       <div className="bg-black min-h-screen text-white">
-        <CursorGlow />
         <Register onRegister={(userData) => setUser(userData)} />
       </div>
     );
@@ -85,6 +85,7 @@ export default function App() {
                 <Route path="/transfer" element={<TransferPage />} />
                 <Route path="/transactions" element={<TransactionsPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/void" element={<VoidPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Routes>
@@ -94,4 +95,5 @@ export default function App() {
     </SmoothScroll>
   );
 }
+
 

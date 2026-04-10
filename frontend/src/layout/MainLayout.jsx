@@ -7,11 +7,15 @@ import SystemCore from "../components/SystemCore";
 import CursorGlow from "../components/CursorGlow";
 import SystemLoader from "../components/ui/SystemLoader";
 import { useBankingStore } from "../store/useBankingStore";
+import { cn } from "../lib/utils";
+
 
 export default function MainLayout() {
   const location = useLocation();
   const [isNavigating, setIsNavigating] = useState(false);
   const { balance, systemStatus, isReversing } = useBankingStore();
+  
+  const isVoidMode = location.pathname === '/void';
 
   // Show loader on route change
   useEffect(() => {
@@ -41,6 +45,12 @@ export default function MainLayout() {
       exit: { opacity: 0, filter: "blur(20px)" },
       transition: { duration: 0.6 }
     };
+    if (path === '/void') return {
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+      transition: { duration: 1 }
+    };
     return {
       initial: { opacity: 0, y: 20 },
       animate: { opacity: 1, y: 0 },
@@ -52,10 +62,19 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
       {/* Background Layer 1: 3D System Core */}
-      <SystemCore isReversing={isReversing} balance={balance} systemStatus={systemStatus} />
+      <SystemCore 
+        isReversing={isReversing} 
+        balance={balance} 
+        systemStatus={systemStatus} 
+        interactive={isVoidMode} 
+      />
       
       {/* Background Layer 2: Connecting Particles */}
-      <ParticleBg balance={balance} systemStatus={systemStatus} />
+      <ParticleBg 
+        balance={balance} 
+        systemStatus={systemStatus} 
+        interactive={isVoidMode} 
+      />
       
       {/* Mid Layer: Mesh Gradients */}
       <div className="fixed inset-0 pointer-events-none z-[-5] opacity-20 bg-mesh" />
@@ -65,7 +84,10 @@ export default function MainLayout() {
       <Navbar />
 
       {/* Main Content Area */}
-      <main className="container mx-auto px-6 pb-20 pt-28 relative z-10">
+      <main className={cn(
+        "container mx-auto px-6 pb-20 pt-28 relative z-10",
+        isVoidMode && "pointer-events-none"
+      )}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -92,4 +114,5 @@ export default function MainLayout() {
     </div>
   );
 }
+
 

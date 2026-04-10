@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, Stars, PerspectiveCamera } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Sphere, Stars, PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Orb({ isReversing, balance, systemStatus }) {
@@ -113,9 +113,9 @@ function ParticleField({ count = 200, systemStatus }) {
   );
 }
 
-export default function SystemCore({ isReversing, balance, systemStatus }) {
+export default function SystemCore({ isReversing, balance, systemStatus, interactive = false }) {
   return (
-    <div className="fixed inset-0 z-[-10] pointer-events-none opacity-100">
+    <div className={`fixed inset-0 z-[-10] transition-all duration-1000 ${interactive ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-100'}`}>
       <Canvas style={{ height: '100%', width: '100%' }}>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <ambientLight intensity={0.5} />
@@ -126,16 +126,21 @@ export default function SystemCore({ isReversing, balance, systemStatus }) {
         <ParticleField count={400} systemStatus={systemStatus} />
         <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
         
+        {interactive && <OrbitControls enableZoom={true} enablePan={false} autoRotate autoRotateSpeed={0.5} />}
+
         {/* Post-processing-like glow */}
-        <mesh position={[0, 0, -2]}>
-          <planeGeometry args={[20, 20]} />
-          <meshBasicMaterial 
-            color="#000000" 
-            transparent 
-            opacity={0.1}
-          />
-        </mesh>
+        {!interactive && (
+          <mesh position={[0, 0, -2]}>
+            <planeGeometry args={[20, 20]} />
+            <meshBasicMaterial 
+              color="#000000" 
+              transparent 
+              opacity={0.1}
+            />
+          </mesh>
+        )}
       </Canvas>
     </div>
   );
 }
+

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
-export default function ParticleBg({ balance = 0 }) {
+export default function ParticleBg({ balance = 0, interactive = false }) {
   const [init, setInit] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function ParticleBg({ balance = 0 }) {
         },
       },
       particles: {
-        color: { value: isLowBalance ? "#ff007a" : "#00ffff" },
+        color: { value: (isLowBalance ? "#ff007a" : "#00ffff") },
         links: {
           color: isLowBalance ? "#ff007a" : "#00ffff",
           distance: 150,
@@ -64,10 +64,11 @@ export default function ParticleBg({ balance = 0 }) {
       <Particles
         id="tsparticles"
         options={options}
-        className="absolute inset-0 z-0 pointer-events-none"
+        className={`absolute inset-0 z-0 transition-all duration-1000 ${interactive ? 'pointer-events-auto cursor-crosshair' : 'pointer-events-none'}`}
       />
     );
   }
 
   return null;
 }
+

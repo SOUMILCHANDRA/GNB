@@ -9,7 +9,9 @@ const Navbar = () => {
     { path: "/", label: "SYSTEM", icon: LayoutDashboard },
     { path: "/transfer", label: "TRANSFER_PROTOCOL", icon: Send },
     { path: "/transactions", label: "LEDGER_ARCHIVE", icon: History },
+    { path: "/void", label: "VOID", icon: Eye },
   ];
+
 
   return (
     <nav className="fixed top-8 left-1/2 -translate-x-1/2 z-50">
