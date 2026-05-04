@@ -112,4 +112,4 @@ This site doesn't just manage your money. It makes you feel like the person who 
 ---
 
 **— Management, Goliath National Bank**  
-**— Designed by Soumil Chandra & Antigravity**
+**— Designed by Soumil Chandra**
