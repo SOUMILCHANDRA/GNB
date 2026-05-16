@@ -1,4 +1,4 @@
-# 👔 Goliath National Bank (GNB)
+# 👔 Goliath National Bank ( GNB )
 
 🔗 **Live Demo**: [https://frontend-five-kohl-95.vercel.app](https://frontend-five-kohl-95.vercel.app)  📦 **GitHub**: [https://github.com/SOUMILCHANDRA/GNB](https://github.com/SOUMILCHANDRA/GNB)
 
