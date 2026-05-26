@@ -7,7 +7,7 @@
 ![Deployed](https://img.shields.io/badge/DEPLOYED-VERCEL-000000?style=for-the-badge&logo=vercel&logoColor=white) 
 ![Status](https://img.shields.io/badge/STATUS-PRODUCTION-22c55e?style=for-the-badge)
 
-> A high-performance, cinematic banking system designed for immersive financial management with real-time 3D telemetry and encrypted data protocols.
+> A high-performance, cinematic banking system designed for immersive financial management with  real-time 3D telemetry and encrypted data protocols.
 
 ---
 
